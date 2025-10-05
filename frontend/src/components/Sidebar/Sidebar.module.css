@@ -1,0 +1,43 @@
+.sidebar {
+  width: 200px;
+  background: #ffe2d5;
+  color: #412200;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+}
+
+.logo {
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+}
+
+nav a {
+  color: #412200;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.logout {
+  margin-top: auto;
+  background: #ef4444;
+  border: none;
+  padding: 0.5rem 1rem;
+  color: white;
+  cursor: pointer;
+}
+
+.logoutButton {
+  background-color: #bd7777;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.logoutButton:hover {
+  background-color: #a15f5f;
+}
