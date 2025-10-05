@@ -28,6 +28,11 @@ Be sure to check you're on the correct branch
 ```bash
 git branch
 ```
+## 🛠️ Environment Setup
+
+1. Copy the example environment file:
+   ```bash
+   cp backend/.env.example backend/.env
 # 4. Commit your changes
 ```bash
 git add .
