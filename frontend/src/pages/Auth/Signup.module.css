@@ -1,29 +1,153 @@
-.container {
+@import url('https://fonts.googleapis.com/css2?family=Nobile:wght@500;700&display=swap');
+
+body {
+  display: block !important;
+  place-items: unset !important; 
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+}
+
+.signupPageBackground { 
+ background: linear-gradient(180deg, #FFF9F6 0%, #FFE2D5 100%);
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background: #f9fafb;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.signupContainer {
+  width: 95vw;
+  max-width: 1200px; 
+  padding: clamp(20px, 5vw, 40px);
+  box-sizing: border-box;
+  transform: scale(0.8);
+}
+
+.signupContent { 
+ /* margin-top: 3rem; */
+ /* transform: scale(0.8); */
+ width: 100%; 
+}
+
+h1 {
+  font-family: 'Nobile', sans-serif;
+  font-weight: 700;
+  font-size: clamp(30px, 8vw, 50px); 
+  line-height: 100%;
+  letter-spacing: 0%;
+  margin-bottom: clamp(1rem, 3vw, 2rem);
+  color: #412200;
+}
+
+.signupContent p { 
+  font-family: 'Nobile', sans-serif;
+  font-weight: 500;
+  font-size: clamp(16px, 4vw, 24px);
+  line-height: 100%;
+  letter-spacing: 0%;
+  margin-bottom: clamp(1.5rem, 5vw, 3rem);
+  color: #412200;
 }
 
 form {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  width: 300px;
+    display: flex;
+    flex-direction: column;
+    background: none;
+    width: 80vw;
+    padding: 0px;
+}
+
+.formRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  width: 100%;
+}
+
+.formGroup {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  margin-bottom: clamp(1rem, 3vw, 2rem);
+  flex: 1;
+  width: 100%;
 }
 
-button {
-  background: #10b981;
-  color: white;
-  border: none;
-  padding: 0.5rem;
+label {
+  font-family: 'Nobile', sans-serif;
+  font-weight: 700;
+  font-size: clamp(18px, 3.5vw, 26px);
+  line-height: 100%;
+  letter-spacing: 0%;
+  margin-bottom: 0.5rem;
+  color: #412200;
+}
+
+input { 
+  width: 100%;
+  height: clamp(40px, 12vw, 56px); 
+  border-radius: 13px;
+  border: 2px solid #BD7777;
+  padding: 0 1rem;
+  font-family: 'Nobile', sans-serif;
+  font-weight: 500;
+  font-size: clamp(16px, 3.5vw, 24px); 
+  line-height: 100%;
+  letter-spacing: 0%;
+  box-sizing: border-box;
+  background-color: white;
+  color: #412200; 
+}
+
+input::placeholder { 
+  color: #BD7777;
+  opacity: 0.7;
+}
+
+.createAccountButton { 
+ width: clamp(40px, 50vw, 368px);
+  height: 82px;
+  border-radius: 18px;
+  border: 2px solid #BD7777;
+  background-color: #BD7777;
+  color: #FFFFFF;
+  font-family: 'Nobile', sans-serif;
+  font-weight: 500;
+  font-size: clamp(24px, 3vw, 32px);
+  line-height: 100%;
+  letter-spacing: 0%;
   cursor: pointer;
+  margin-top: clamp(1rem, 3vw, 1rem); 
+  /* margin-top: clamp(1rem, 3vw, 1rem); */
 }
 
-.error {
-  color: red;
+.signinLink {
+  font-family: 'Nobile', sans-serif;
+  font-weight: 500;
+  font-size: clamp(16px, 4vw, 24px); 
+  line-height: 100%;
+  letter-spacing: 0%;
+  font-style: normal;
+  font-size: clamp(14px, 3vw, 18px); 
+}
+
+.signinLink a {
+  cursor: pointer;
+  color: #DD006B;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-style: solid;
+  text-decoration-thickness: auto;
+  text-underline-offset: 0;
+  text-decoration-skip-ink: auto;
+}
+
+.errorMessage p { 
+    color: red;
+    font-family: 'Nobile', sans-serif;
+    font-size: clamp(14px, 3vw, 18px); 
 }
