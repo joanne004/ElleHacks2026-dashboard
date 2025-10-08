@@ -1,29 +1,147 @@
-.container {
+@import url('https://fonts.googleapis.com/css2?family=Nobile:wght@500;700&display=swap');
+
+body {
+  display: block !important;
+  place-items: unset !important; 
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+}
+
+.signupPageBackground { 
+ background: linear-gradient(180deg, #FFF9F6 0%, #FFE2D5 100%);
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background: #f9fafb;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.signupContainer {
+  width: 100%;
+  max-width: 1200px; 
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.signupContent { 
+ margin-top: 3rem;
+ transform: scale(0.8);
+}
+
+h1 {
+  font-family: 'Nobile', sans-serif;
+  font-weight: 700;
+  font-size: 50px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  margin-bottom: 2rem;
+  color: #412200;
+}
+
+.signupContent p { 
+  font-family: 'Nobile', sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  margin-bottom: 3rem;
+  color: #412200;
 }
 
 form {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  width: 300px;
+    display: flex;
+    flex-direction: column;
+    background: none;
+    width: 100%;
+}
+
+.formRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.formGroup {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  margin-bottom: 2rem;
+  flex: 1;
 }
 
-button {
-  background: #10b981;
-  color: white;
-  border: none;
-  padding: 0.5rem;
+label {
+  font-family: 'Nobile', sans-serif;
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  margin-bottom: 0.5rem;
+  color: #412200;
+}
+
+input { 
+  width: 100%;
+  height: 56px;
+  border-radius: 13px;
+  border: 2px solid #BD7777;
+  padding: 0 1rem;
+  font-family: 'Nobile', sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  box-sizing: border-box;
+  background-color: white;
+  color: #412200; 
+}
+
+input::placeholder { 
+  color: #BD7777;
+  opacity: 0.7;
+}
+
+.createAccountButton { 
+  width: 368px;
+  height: 82px;
+  border-radius: 18px;
+  border: 2px solid #BD7777;
+  background-color: #BD7777;
+  color: #FFFFFF;
+  font-family: 'Nobile', sans-serif;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 100%;
+  letter-spacing: 0%;
   cursor: pointer;
+  margin-top: 1rem;
 }
 
-.error {
-  color: red;
+.signinLink {
+  font-family: 'Nobile', sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  font-style: normal;
+  margin-top: 2rem;
+}
+
+.signinLink a {
+  cursor: pointer;
+  color: #DD006B;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-style: solid;
+  text-decoration-thickness: auto;
+  text-underline-offset: 0;
+  text-decoration-skip-ink: auto;
+}
+
+.errorMessage p { 
+    color: red;
+    font-family: 'Nobile', sans-serif;
+    font-size: 18px;
 }
