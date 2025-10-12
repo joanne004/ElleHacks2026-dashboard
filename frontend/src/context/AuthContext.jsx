@@ -16,13 +16,17 @@ export const AuthProvider = ({ children }) => {
     await API.post("/auth/signup", { firstName, lastName, email, password });
   };
 
+  const forgotPassword = async (firstName, lastName, email, newPassword) => {
+    await API.post("/auth/forgotpassword", { firstName, lastName, email, newPassword });
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, login, signup, forgotPassword, logout }}>
       {children}
     </AuthContext.Provider>
   );
