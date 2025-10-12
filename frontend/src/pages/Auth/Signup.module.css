@@ -13,24 +13,6 @@ body {
 .signupPageBackground { 
  background: linear-gradient(180deg, #FFF9F6 0%, #FFE2D5 100%);
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  box-sizing: border-box;
-}
-
-.signupContainer {
-  width: 95vw;
-  max-width: 1200px; 
-  padding: clamp(20px, 5vw, 40px);
-  box-sizing: border-box;
-  transform: scale(0.8);
-}
-
-.signupContent { 
- /* margin-top: 3rem; */
- /* transform: scale(0.8); */
  width: 100%; 
 }
 
