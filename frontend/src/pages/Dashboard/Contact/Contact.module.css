@@ -1,0 +1,120 @@
+.container {
+    position: fixed; /* stick to viewport */
+    top: 0;
+    left: 260px; /* account for fixed sidebar width */
+    right: 0;
+    height: 100vh; /* full screen height */
+    background: #FFE2D5;
+    margin-left: 0px;
+    overflow-y: auto; /* internal vertical scrolling only */
+    overflow-x: hidden; /* allow content to extend off-screen without scrollbar */
+}
+
+.content {
+    position: absolute;
+    left: 100px; /* match Home */
+    top: 48px;
+    width: 1700px;
+    height: 940px;
+    background: #FFF9F6;
+    border-radius: 55px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 50px;
+}
+
+.sectionTitle {
+    position: absolute;
+    width: 250px;
+    height: 40px;
+    left: 94px;
+    top: 40px;
+    font-family: 'Nobile', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 35px;
+    line-height: 45px;
+    display: flex;
+    align-items: center;
+    color: #412200;
+}
+
+.divider {
+    position: absolute;
+    width: 1490px;
+    height: 0px;
+    left: 94px;
+    top: 145px;
+    border: 2px solid #FFE2D5;
+}
+
+.greeting {
+    position: absolute;
+    width: 1100px;
+    height: 94px;
+    left: 94px;
+    top: 145px;
+    font-family: 'Nobile', sans-serif;
+    font-style: normal;
+    font-weight: 650;
+    font-size: 60px;
+    line-height: 79px;
+    display: flex;
+    align-items: center;
+    color: #412200;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.paragraph {
+    position: relative;
+    width: 1490px;
+    left: 45px;
+    margin-top: 300px; /* below greeting */
+    font-family: 'Nobile', sans-serif;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 30px;
+    color: #412200;
+}
+
+.paragraph + .paragraph {
+    margin-top: 10px;
+}
+
+.list {
+    margin-left: 40px;
+    margin-top: 15px;
+    color: #bd7777;
+}
+
+.list li {
+    margin: 20px 0;
+}
+
+.link {
+    color: #bd7777;
+    text-decoration: underline;
+}
+
+.link:hover,
+.link:focus {
+    color: #412200;
+}
+
+.imageTop {
+    position: absolute;
+    left: 850px;
+    top: 190px;
+    width: 90px;
+    height: auto;
+}
+
+.imageBottom {
+    position: absolute;
+    right: 200px;
+    bottom: 40px;
+    width: 160px;
+    height: auto;
+}
+
