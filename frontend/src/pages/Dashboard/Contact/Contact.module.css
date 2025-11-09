@@ -1,49 +1,46 @@
 .container {
-    position: fixed; /* stick to viewport */
+    position: fixed;
     top: 0;
-    left: 260px; /* account for fixed sidebar width */
+    left: clamp(200px, 18vw, 260px); /* matches sidebar width */
     right: 0;
-    height: 100vh; /* full screen height */
+    height: 100vh;
     background: #FFE2D5;
-    margin-left: 0px;
-    overflow-y: auto; /* internal vertical scrolling only */
-    overflow-x: hidden; /* allow content to extend off-screen without scrollbar */
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .content {
-    position: absolute;
-    left: 100px; /* match Home */
-    top: 48px;
-    width: 1700px;
-    height: 940px;
+    position: relative; /* changed from absolute */
+    margin: 48px auto 48px 100px;
+    max-width: 1700px;
+    width: calc(100% - 150px);
+    min-height: 940px;
     background: #FFF9F6;
     border-radius: 55px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     padding: 0 50px;
+    padding-bottom: 80px; /* extra space for bottom image */
+    box-sizing: border-box;
 }
 
 .sectionTitle {
     position: absolute;
-    width: 250px;
-    height: 40px;
     left: 94px;
     top: 40px;
     font-family: 'Nobile', sans-serif;
     font-style: normal;
     font-weight: 500;
-    font-size: 35px;
+    font-size: clamp(24px, 3vw, 35px);
     line-height: 45px;
-    display: flex;
-    align-items: center;
     color: #412200;
 }
 
 .divider {
     position: absolute;
-    width: 1490px;
-    height: 0px;
+    width: calc(100% - 188px);
+    max-width: 1490px;
     left: 94px;
     top: 145px;
     border: 2px solid #FFE2D5;
@@ -51,30 +48,29 @@
 
 .greeting {
     position: absolute;
-    width: 1100px;
-    height: 94px;
+    max-width: 1100px;
+    width: calc(100% - 310px);
     left: 94px;
     top: 145px;
     font-family: 'Nobile', sans-serif;
     font-style: normal;
     font-weight: 650;
-    font-size: 60px;
-    line-height: 79px;
-    display: flex;
-    align-items: center;
+    font-size: clamp(32px, 5vw, 60px);
+    line-height: 1.3;
     color: #412200;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 .paragraph {
     position: relative;
-    width: 1490px;
+    width: calc(100% - 85px);
+    max-width: 1490px;
     left: 45px;
-    margin-top: 300px; /* below greeting */
+    margin-top: 340px;
     font-family: 'Nobile', sans-serif;
     font-weight: 400;
-    font-size: 22px;
-    line-height: 30px;
+    font-size: clamp(16px, 2vw, 22px);
+    line-height: 1.4;
     color: #412200;
 }
 
@@ -85,7 +81,9 @@
 .list {
     margin-left: 40px;
     margin-top: 15px;
+    width: calc(100% - 105px);
     color: #bd7777;
+    font-size: clamp(14px, 1.8vw, 18px);
 }
 
 .list li {
@@ -95,6 +93,7 @@
 .link {
     color: #bd7777;
     text-decoration: underline;
+    word-break: break-word;
 }
 
 .link:hover,
@@ -104,17 +103,69 @@
 
 .imageTop {
     position: absolute;
-    left: 850px;
+    right: 8vw;
     top: 190px;
-    width: 90px;
+    width: clamp(60px, 8vw, 90px);
     height: auto;
 }
 
 .imageBottom {
     position: absolute;
-    right: 200px;
+    right: clamp(50px, 15%, 200px);
     bottom: 40px;
-    width: 160px;
+    width: clamp(100px, 12vw, 160px);
     height: auto;
 }
 
+/* Mobile view */
+@media (max-width: 900px) {
+    .container {
+        left: 0; /* snap to left edge when sidebar disappears */
+    }
+
+    .content {
+        margin: 55px 40px;
+        width: calc(100% - 80px);
+        padding: 0 30px;
+        padding-bottom: 60px;
+        border-radius: 30px;
+        overflow-y: auto; /* enable scrolling within content */
+        max-height: calc(100vh - 80px);
+    }
+
+    .sectionTitle {
+        left: 30px;
+        top: 5px;
+    }
+
+    .divider {
+        left: 30px;
+        width: calc(100% - 60px);
+        top: 75px;
+    }
+
+    .greeting {
+        left: 30px;
+        top: 75px;
+        width: calc(100% - 60px);
+    }
+
+    .paragraph {
+        left: 3px;
+        width: calc(100% - 50px);
+        margin-top: 240px;
+    }
+
+    .list {
+        margin-left: 5px;
+        width: calc(100% - 90px);
+    }
+
+    .imageTop {
+        display: none;
+    }
+
+    .imageBottom {
+        display: none;
+    }
+}
