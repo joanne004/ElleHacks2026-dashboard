@@ -3,6 +3,19 @@
   height: 100vh;
 }
 
+.dashboardContainer {
+  flex: 1;
+  margin-left: 260px; /* account for fixed sidebar width */
+  min-height: 100vh;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .dashboardContainer {
+    margin-left: 0; /* sidebar hidden, content full width */
+  }
+}
+
 .main {
   flex: 1;
   padding: 2rem;
