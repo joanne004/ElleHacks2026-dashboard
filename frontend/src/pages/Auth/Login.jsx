@@ -24,15 +24,15 @@ export default function Login() {
         <Navbar />
 
         <div className="overflow-hidden relative w-screen min-h-screen bg-gradient-to-b top-0 from-[#FFF9F6] to-[#FFE2D5] justify-center items-center">
-        <img src="src/assets/girl-with-balloons.png" alt="Image of a girl with balloons" className="absolute w-[80vw] -bottom-[-.05vw] -right-[20.5vw]"/>
-          <div className="relative z-10 w-full font-[Nobile] max-w-4xl transform scale-90 md:scale-100 my-20 my-60 mx-10 lg:mx-30 p-4 md:p-8">
+        <img src="src/assets/girl-with-balloons.png" alt="Image of a girl with balloons" className="absolute md:w-[80vw] w-[100vw] -bottom-[-.05vw] -right-[20.5vw]"/>
+          <div className="relative z-10 w-full font-[Nobile] max-w-4xl transform scale-90 md:scale-100 my-20 my-60 lg:mx-30 p-4 md:p-8">
           <h1 className="text-[#412200] font-bold text-4xl sm:text-5xl mb-10">Log In</h1>
           <p className="w-4/5 md:w-full text-[#412200] font-medium font-[Nobile] text-lg sm:text-2xl mb-13">
             Log in to access your ElleHacks26 application.
           </p>
 
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4 lg:flex-col md:gap-6 w-full max-w-xs lg:max-w-full">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 lg:flex-col md:gap-6 w-full max-w-xs md:max-w-full">
             <div className="flex flex-col gap-2">
               <label htmlFor="email" className="font-bold text-2xl sm:text-2xl text-[#412200]">Email Address*</label>
                 <input

@@ -27,7 +27,7 @@
 .sectionTitle {
   position: absolute;
   left: 94px;
-  top: 40px;
+  top: 65px;
   font-family: 'Nobile', sans-serif;
   font-style: normal;
   font-weight: 500;
@@ -50,7 +50,7 @@
   max-width: 871px;
   width: calc(100% - 188px);
   left: 94px;
-  top: 145px;
+  top: 185px;
   font-family: 'Nobile', sans-serif;
   font-style: normal;
   font-weight: 650;
@@ -67,7 +67,7 @@
   max-width: 441px;
   width: calc(100% - 188px);
   left: 94px;
-  top: 230px;
+  top: 270px;
   font-family: 'Nobile', sans-serif;
   font-style: normal;
   font-weight: 500;
@@ -95,7 +95,7 @@
 
   .sectionTitle {
       left: 30px;
-      top: 5px;
+      top: 20px;
   }
 
   .divider {
@@ -106,13 +106,13 @@
 
   .greeting {
       left: 30px;
-      top: 75px;
+      top: 110px;
       width: calc(100% - 60px);
   }
 
   .welcome {
       left: 30px;
-      top: 140px;
+      top: 175px;
       width: calc(100% - 60px);
   }
 }

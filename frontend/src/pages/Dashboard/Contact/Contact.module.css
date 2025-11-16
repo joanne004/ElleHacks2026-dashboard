@@ -28,7 +28,7 @@
 .sectionTitle {
     position: absolute;
     left: 94px;
-    top: 40px;
+    top: 65px;
     font-family: 'Nobile', sans-serif;
     font-style: normal;
     font-weight: 500;
@@ -51,7 +51,7 @@
     max-width: 1100px;
     width: calc(100% - 310px);
     left: 94px;
-    top: 145px;
+    top: 185px;
     font-family: 'Nobile', sans-serif;
     font-style: normal;
     font-weight: 650;
@@ -83,7 +83,7 @@
     margin-top: 15px;
     width: calc(100% - 105px);
     color: #bd7777;
-    font-size: clamp(14px, 1.8vw, 18px);
+    font-size: clamp(14px, 2vw, 22px);
 }
 
 .list li {
@@ -134,8 +134,8 @@
     }
 
     .sectionTitle {
-        left: 30px;
-        top: 5px;
+        left: 20px;
+        top: 20px;
     }
 
     .divider {
@@ -146,7 +146,7 @@
 
     .greeting {
         left: 30px;
-        top: 75px;
+        top: 110px;
         width: calc(100% - 60px);
     }
 
