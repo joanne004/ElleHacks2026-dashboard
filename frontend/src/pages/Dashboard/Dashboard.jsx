@@ -4,7 +4,10 @@ import Home from './Home/Home';
 import Contact from './Contact/Contact';
 import ApplicationForm from './ApplicationForm/ApplicationForm';
 import FAQ from './FAQ/FAQ';
+<<<<<<< HEAD
 import Sponsors from './Sponsors/Sponsors';
+=======
+>>>>>>> ApplicationForm-natalie
 import styles from './Dashboard.module.css';
 
 const Dashboard = () => {
@@ -16,7 +19,10 @@ const Dashboard = () => {
           <Route path="" element={<Home />} />
           <Route path="home" element={<Home />} />
           <Route path="contact" element={<Contact />} />
+<<<<<<< HEAD
           <Route path="sponsors" element={<Sponsors />} />
+=======
+>>>>>>> ApplicationForm-natalie
           <Route path="application-form" element={<ApplicationForm />} />
           <Route path="faq" element={<FAQ />} />
         </Routes>
