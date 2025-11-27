@@ -24,7 +24,7 @@ const Sidebar = () => {
             <NavLink to="/dashboard/contact">Contact</NavLink>
           </li>
           <li>
-            <NavLink to="/dashboard/application-form">Application Form</NavLink>
+            <NavLink to="/dashboard/application-form">My Application</NavLink>
           </li>
           <li>
             <NavLink to="/dashboard/faq">FAQ</NavLink>

@@ -14,10 +14,20 @@ import info from "../../../assets/ApplicationForm/info-banner.png";
 import country from "../../../assets/ApplicationForm/country-banner.png";
 import interest from "../../../assets/ApplicationForm/interest-banner.png";
 import york from "../../../assets/ApplicationForm/york-banner.png";
+import resume from "../../../assets/ApplicationForm/resume-banner.png";
+import file from "../../../assets/ApplicationForm/add-file.png";
+import gears from "../../../assets/ApplicationForm/gears.png";
+import event from "../../../assets/ApplicationForm/event-banner.png";
+import hats from "../../../assets/ApplicationForm/party-hats.png";
+import questions from "../../../assets/ApplicationForm/questions-banner.png";
+import cord from "../../../assets/ApplicationForm/cord.png";
+import mouse from "../../../assets/ApplicationForm/mouse.png";
+import final from "../../../assets/ApplicationForm/final-banner.png";
+import girl from "../../../assets/ApplicationForm/girl-laptop.png";
 
 function App() {
-
-  const [formData, setFormData] = useState({
+  const savedData = JSON.parse(localStorage.getItem("formData")) || {
+    agreement: "",
     firstName: "",
     lastName: "",
     preferredFirstName: "",
@@ -39,30 +49,109 @@ function App() {
     hackathonsAttended: "",
     attendedElleHacksBefore: "",
     yorkStudentNumber: "",
-  });
+    recruit: "",
+    linkedin: "",
+    github: "",
+    dietaryRestrictions: [],
+    otherDiet: "",
+    tShirtSize: "",
+    whyElleHacks: "",
+    hopeToAchieve: "",
+    projectWorked: "",
+    confirm: "",
+    overnight: "",
+    codeOfConduct: "",
+    policies: "",
+    MLHauthorized: "",
+    requests: ""
+  };
+  const [formData, setFormData] = useState(savedData);
 
-  const [isNavActive, setIsNavActive] = useState(false);
-  const toggleNav = () => {
-    setIsNavActive(!isNavActive);
+  const isStepValid = () => {
+    switch (step) {
+      case 1:
+        return formData.agreement !== "";
+      case 2:
+        return (
+          formData.firstName &&
+          formData.lastName &&
+          formData.pronouns &&
+          formData.email &&
+          formData.phone &&
+          formData.ageOnEvent
+        );
+      case 3:
+        return (
+          formData.country &&
+          formData.province &&
+          formData.city &&
+          formData.disability &&
+          formData.indigenousIdentity &&
+          formData.ethnicity.length > 0
+        );
+      case 4:
+        return (
+          formData.levelOfStudy &&
+          formData.school &&
+          formData.graduationYear &&
+          formData.fieldOfStudy &&
+          formData.hackathonsAttended &&
+          formData.attended // radio for ElleHacks before
+        );
+      case 5:
+        return formData.yorkStudentNumber;
+      case 6:
+        return formData.resumeFile && formData.recruit;
+      case 7:
+        return formData.tShirtSize && formData.dietaryRestrictions.length > 0;
+      case 8:
+        return formData.whyElleHacks && formData.hopeToAchieve && formData.projectWorked;
+      case 9:
+        return formData.ableToAttend && formData.overnight && formData.codeOfConduct && formData.policies;
+      default:
+        return false;
+    }
   };
 
-  const [step, setStep] = useState(1);
-  const nextStep = () => setStep((prev) => Math.min(prev + 1, 5));
-  const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
+  const [step, setStep] = useState(parseInt(localStorage.getItem("step")) || 1);
+  const prevStep = () => {
+    setStep((prev) => {
+      const prevStep = Math.max(prev - 1, 1);
+      localStorage.setItem("step", prevStep);
+      return prevStep;
+    });
+  };
+  const nextStep = () => {
+    if (isStepValid()) {
+      setStep((prev) => {
+        const next = Math.min(prev + 1, 9);
+        localStorage.setItem("step", next);
+        return next;
+      });
+    }
+  };
 
   const handleChange = (e) => {  // Handle form input changes
     const { name, value, type, checked } = e.target;
+    const checkboxes = ["ethnicity", "dietaryRestrictions"]; // Handle checkbox groups as arrays
 
-    if (type === "checkbox") {
-      setFormData((prev) => ({
-        ...prev,
-        ethnicity: checked
-          ? [...prev.ethnicity, value]
-          : prev.ethnicity.filter((item) => item !== value),
-      }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+    if (type === "checkbox" && checkboxes.includes(name)) {
+      const newValues = checked
+          ? [...formData[name], value]
+          : formData[name].filter((item) => item !== value);
+      
+      setFormData((prev) => {
+        const updated= {...prev, [name]: newValues};
+        localStorage.setItem("formData", JSON.stringify(updated));
+        return updated;
+      });
+      return;
     }
+    setFormData((prev) => {
+      const updated = { ...prev, [name]: value }; // Normal inputs
+      localStorage.setItem("formData", JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const handleSubmit = async () => {  // Submit form data to backend (for now)
@@ -96,7 +185,7 @@ function App() {
           <section className="info-card">
             <img src={partyPopper} alt="Party popper" className="decor party-popper" />
             <img src={balloon10} alt="Balloon shaped like the number 10" className="decor balloon-10" />
-            <p className="italics">
+            <p>
               This form will only take about 10 minutes of your time. Keep your
               resume close by! No skill-testing or long questions involved 🙂
             </p>
@@ -138,13 +227,13 @@ function App() {
           </section>
 
           <div className="agreement">
-            <p className="italics"><strong>I understand that ElleHacks is
+            <p><strong>I understand that ElleHacks is
               an event for marginalized gender groups. Preference will be given
               to these groups when selecting accepted hackers.*</strong></p>
-            <label><input type="radio" required />Yes, I understand.</label>
+            <label><input type="radio" name="agreement" value="Yes" onChange={handleChange} required />Yes, I understand.</label>
             <img src={headphones} alt="Headphones" className="decor headphones" />
             <div className="button-row">
-              <button className="btnNext" onClick={nextStep}>Next</button>
+              <button className="btnNext" onClick={nextStep} disabled={!isStepValid()}>Next</button>
             </div>
           </div>
         </>
@@ -164,12 +253,12 @@ function App() {
               <label>Preferred First Name<input type="text" name="preferredFirstName" value={formData.preferredFirstName} onChange={handleChange} /></label>
               <label>Pronouns*<input type="text" name="pronouns" value={formData.pronouns} onChange={handleChange} required /></label>
               <label>Email Address*<input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="ex. mary.smith@example.com" required /></label>
-              <label>Phone Number*<input type="phone" name="phone" value={formData.phone} onChange={handleChange} required /></label>
+              <label>Phone Number*<input type="tel" name="phone" value={formData.phone} onChange={handleChange} required /></label>
               <label>What will be your age as of January 23, 2026?*<input type="number" name="ageOnEvent" value={formData.ageOnEvent} onChange={handleChange} min="13" required /></label>
             </div>
             <div className="button-row">
               <button className="btnBack" onClick={prevStep}>Back</button>
-              <button className="btnNext" onClick={nextStep}>Next</button>
+              <button className="btnNext" onClick={nextStep} disabled={!isStepValid()}>Next</button>
             </div>
           </section>
         </>
@@ -224,12 +313,12 @@ function App() {
                   </label>
                 </div>
 
-                <p className="italics">
+                <div className="agreement">
                   According to the Accessible Canada Act, disability means "any impairment, 
                   including a physical, mental, intellectual, cognitive, learning, communication or sensory impairment—or 
                   a functional limitation—whether permanent, temporary or episodic in nature, or evident or not, that in 
                   interaction with a barrier, hinders a person’s full and equal participation in society".
-                </p>
+                </div>
 
                 <div className="radio-block">
                   <p><strong>Do you identify as a person with a disability as described in the Accessible Canada Act?</strong></p>
@@ -262,13 +351,13 @@ function App() {
                   <label><input type="checkbox" name="ethnicity" value="Prefer not to answer" onChange={handleChange} />Prefer not to answer</label>
                   <label>
                     <input type="checkbox" id="other" name="ethnicity" value="Other" onChange={handleChange} />
-                    Other: <input type="text" id="otherText" name="otherEth" value={formData.otherEthnicity} onChange={handleChange} />
+                    Other: <input type="text" id="otherText" name="otherEthnicity" value={formData.otherEthnicity} onChange={handleChange} />
                   </label>
                 </div>
 
                 <div className="button-row">
                   <button className="btnBack" onClick={prevStep}>Back</button>
-                  <button className="btnNext" onClick={nextStep}>Next</button>
+                  <button className="btnNext" onClick={nextStep} disabled={!isStepValid()}>Next</button>
                 </div>
             </section>
         </>
@@ -277,7 +366,7 @@ function App() {
       {step === 4 &&
         <>
           {/* Education & Interests Section */}
-          <div className="section-header">
+          <div className="section-header york-section">
             <img src={balloonsStriped} alt="Striped balloons" className="decor balloons-country-bg" />
             <img src={interest} alt="Interest banner" className="section-banner"/>
             <h2> Educational Background & Interests</h2>
@@ -320,7 +409,7 @@ function App() {
 
               <div className="button-row">
                 <button className="btnBack" onClick={prevStep}>Back</button>
-                <button className="btnNext" onClick={nextStep}>Next</button>
+                <button className="btnNext" onClick={nextStep} disabled={!isStepValid()}>Next</button>
               </div>
           </section>
         </>  
@@ -329,20 +418,195 @@ function App() {
       {step === 5 &&
         <> 
           {/* YorkU Student Section */}
-          <div className="section-header yorku-header">
-            <img src={york} alt="YorkU banner" className="section-banner yorku"/>
-            <h2>YorkU Students Only</h2>
-          </div>
-          <section className="form-section yorku-section">
+          <div className="section-header york-header">
+            <img src={york} alt="YorkU banner" className="section-banner"/>
+            <h2>YorkU Students Only</h2>  
             <img src={flask} alt="Flask" className="decor flask" />
+          </div>
+          <section className="form-section">
               <label>Please enter your Student Number below<input type="text" placeholder="" name="yorkStudentNumber" value={formData.yorkStudentNumber} onChange={handleChange} /></label>
               <div className="button-row">
                 <button className="btnBack" onClick={prevStep}>Back</button>
-                <button className="btnNext" onClick={handleSubmit}>Submit</button>
+                <button className="btnNext" onClick={nextStep} disabled={!isStepValid()}>Next</button>
               </div>
           </section>
         </>
       }   
+
+      { step === 6 &&
+        <>
+          {/* Resume Section */}
+          <div className="section-header resume-header">
+            <img src={resume} alt="Resume banner" className="section-banner" />
+            <h2>Resume and Professional Links</h2>
+          </div>
+          <section className="form-section">
+            <b>Upload your resume here, named in the following format*</b>
+            <p>LastName_FirstName.pdf</p><p className="italics">Example: Doe_Jane.pdf</p>
+            <label htmlFor="fileUpload" className="fileUpload"><img src={file} alt="Folder" className="file" /></label>
+            <input 
+              type="file"
+              id="fileUpload" 
+              name="fileUpload" 
+              accept="application/pdf" 
+              onChange={(e) => 
+                setFormData((prev) => ({
+                ...prev,
+                resumeFile: e.target.files[0]
+                }))
+              } style={{ display: "none" }} required />
+            <br /><br />
+            <b>Can we share your resume & form responses with our sponsors for recruitment opportunities?</b>
+            <br />
+            <div className="radio-group">
+              <div className="checkbox-grid">
+                <label><input type="radio" name="recruit" value="Yes" onChange={handleChange} />Yes, you can share this information with sponsors.</label>
+                <label><input type="radio" name="recruit" value="No" onChange={handleChange} />No, you cannot share this information with sponsors.</label>
+              </div>
+              <img src={gears} alt="Gears" className="gears" />
+            </div>
+            <br />
+            <label><b>If you have a LinkedIn / Portfolio Link, you can provide the link here</b><input type="text" name="linkedin" value={formData.linkedin} onChange={handleChange} /></label>
+            <br />
+            <label><b>If you have a GitHub account, you can provide the link here</b><input type="text" name="githuub" value={formData.github} onChange={handleChange} /></label>
+            <div className="button-row">
+              <button className="btnBack" onClick={prevStep}>Back</button>
+              <button className="btnNext" onClick={nextStep} disabled={!isStepValid()}>Next</button>
+            </div>
+          </section>
+        </>
+      }
+
+      { step === 7 && 
+        <>
+          {/* Logistics Section */}
+          <div className="section-header event-header">
+            <img src={event} alt="Event banner" className="section-banner" />
+            <h2>Event Logistics</h2>
+          </div>
+          <section className="form-section">
+            <br />
+            <b>Dietary Restrictions*</b>
+            <p className="italics">If you have any allergies, please specify under 'Other'</p>
+            <br />
+            <div className="checkbox-grid">
+              <label><input type="checkbox" name="dietaryRestrictions" value="No" onChange={handleChange} />No, I do not have any dietary restrictions</label>
+              <label><input type="checkbox" name="dietaryRestrictions" value="Halal" onChange={handleChange} />Halal</label>
+              <label><input type="checkbox" name="dietaryRestrictions" value="Vegan" onChange={handleChange} />Vegan (includes vegetarian & kosher)</label>
+              <label><input type="checkbox" name="dietaryRestrictions" value="Gluten-Free" onChange={handleChange} />Gluten-Free</label>
+              <label><input type="checkbox" name="dietaryRestrictions" value="Dairy-Free" onChange={handleChange} />Dairy-Free</label>
+              <label><input type="checkbox" name="dietaryRestrictions" value="Allergies" onChange={handleChange} />Allergies</label>
+              <label>
+                <input type="checkbox" id="other" name="dietary" value="Other" onChange={handleChange} />
+                Other: <input type="text" id="otherText" name="otherDiet" value={formData.otherDiet} onChange={handleChange} />
+              </label>
+            </div>
+            <br /><br />
+            <b>T-Shirt Size (unisex)*</b>
+            <br />
+            <div className="radio-group">
+              <div className="checkbox-grid">
+                <label><input type="radio" name="tShirtSize" value="XS" onChange={handleChange} />XS</label>
+                <label><input type="radio" name="tShirtSize" value="S" onChange={handleChange} />S</label>
+                <label><input type="radio" name="tShirtSize" value="M" onChange={handleChange} />M</label>
+                <label><input type="radio" name="tShirtSize" value="L" onChange={handleChange} />L</label>
+                <label><input type="radio" name="tShirtSize" value="XL" onChange={handleChange} />XL</label>
+              </div>
+              <img src={hats} alt="Hats" className="hats" />
+            </div>
+            <div className="button-row">
+              <button className="btnBack" onClick={prevStep}>Back</button>
+              <button className="btnNext" onClick={nextStep} disabled={!isStepValid()}>Next</button>
+            </div>
+          </section>
+        </>
+      }
+          
+      { step === 8 && 
+        <>
+          {/* Questions Section */}
+          <div className="section-header questions-header">
+            <img src={questions} alt="Questions banner" className="section-banner" />
+            <h2>Questions</h2>
+          </div>
+          <section className="form-section questions-section">
+            <br /><br />
+            <b>Why are you interested in participating in ElleHacks 2026?*</b>
+            <br /><br /><br />
+            <textarea id="whyElleHacks" name="whyElleHacks" value={formData.whyElleHacks} onChange={handleChange} rows="9" style={{width: "100%"}}/>
+             <br /><br /><br/>
+            <b>What do you hope to achieve during the hackathon?*</b>
+            <br /><br /><br />
+            <textarea id="whyElleHacks" name="hopeToAchieve" value={formData.hopeToAchieve} onChange={handleChange} rows="9" style={{width: "100%"}}/>
+            <br /><br /><br/>
+            <b>Tell us about a project/assignment you worked on that you're proud of, 
+              or one that totally broke and taught you something anyway.*</b>
+            <br /><br /><br />
+            <textarea id="whyElleHacks" name="projectWorked" value={formData.projectWorked} onChange={handleChange} rows="9" style={{width: "100%"}}/>
+            <img src={cord} alt="Mouse Cord" className="cord" />
+            <img src={mouse} alt="Mouse" className="mouse" />
+            <div className="button-row">
+              <button className="btnBack" onClick={prevStep}>Back</button>
+              <button className="btnNext" onClick={nextStep} disabled={!isStepValid()}>Next</button>
+            </div>
+          </section>
+        </>
+      }
+          
+      { step === 9 && 
+        <>
+          {/* Final Section */}
+          <div className="section-header">
+            <img src={final} alt="Final banner" className="section-banner" />
+            <h2>Final Section</h2>
+          </div>
+          <section className="form-section">
+            <br />
+            <b>Please confirm that you understand ElleHacks 2026 is an in-person event, taking place at York University</b>
+            <br />
+            <p>(4700 Keele St, Toronto, ON, Canada, M3J 1P3)<b>*</b></p>
+            <div className="radio-group">
+              <label><input type="radio" name="ableToAttend" value="Yes" onChange={handleChange} />I am able to attend ElleHacks in-person at York University.</label>
+            </div>
+            <br /><br /><br />
+            <b>Will you require overnight accommendations at ElleHacks?</b> (ie. a quiet place to sleep)<b>*</b>
+            <div className="checkbox-grid">
+              <label><input type="radio" name="overnight" value="Yes" onChange={handleChange} />Yes, I will be staying overnight for some or all of ElleHacks.</label>
+              <label><input type="radio" name="overnight" value="No" onChange={handleChange} />No, I will not be staying overnight for ElleHacks. I will commute to and from the event each day.</label>
+            </div>
+            <br /><br /><br/>
+            <b>I have read and agree to the <a href="https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md">MLH Code of Conduct</a>.*</b>
+            <div className="radio-group">
+              <label><input type="radio" name="codeOfConduct" value="Yes" onChange={handleChange} />I have read and agreed to the MLH Code of Conduct.</label>
+            </div>
+            <br /><br /><br/>
+            <b>
+              I authorize you to share my application/registration information with Major League Hacking for event administration, ranking and 
+              MLH administration in-line with the <a href="https://www.mlh.com/privacy">MLH Privacy Policy</a>. I further agree to the terms of both 
+              the <a href="https://github.com/MLH/mlh-policies/tree/main/prize-terms-and-conditions">MLH Contest Terms and Conditions</a> and the 
+              <a href="https://www.mlh.com/privacy">MLH Privacy Policy</a>.
+            </b>
+            <div className="radio-group">
+              <label><input type="radio" name="policies" value="Yes" onChange={handleChange} />I agree.</label>
+            </div>
+            <br /><br /><br/>
+            <b>I authorize MLH to send me occasional emails about relevant events, career opportunities, and community annoucements.</b> [OPTIONAL]
+            <div className="checkbox-grid">
+              <label><input type="checkbox" name="emailSignup" value="Yes" onChange={handleChange} />I agree.</label>
+            </div>
+            <br /><br />
+            <b>... and we're done! Anything else you'd like to let us know?</b>
+            <p className="italics">If you have any accessibility requests or concerns, please let us know here.</p>
+            <br />
+            <textarea id="requests" name="requests" value={formData.requests} onChange={handleChange} rows="10" style={{width: "100%"}}/>
+              <img src={girl} alt="Girl Laptop" className="girl" />
+              <div className="button-row">
+                <button className="btnBack" onClick={prevStep}>Back</button>
+                <button className="btnNext" onClick={handleSubmit} disabled={!isStepValid()}>Submit</button>
+              </div>
+          </section>
+        </>
+      }
     </div>
   );
 }
