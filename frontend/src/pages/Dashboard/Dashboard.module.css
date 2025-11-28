@@ -3,7 +3,6 @@
   height: 100vh;
 }
 
-<<<<<<< HEAD
 .dashboardContainer {
   flex: 1;
   margin-left: 260px; /* account for fixed sidebar width */
@@ -17,8 +16,6 @@
   }
 }
 
-=======
->>>>>>> ApplicationForm-natalie
 .main {
   flex: 1;
   padding: 2rem;

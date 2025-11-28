@@ -5,6 +5,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
+  const [application, setApplication] = useState(JSON.parse(localStorage.getItem("application")) || null);
 
   const login = async (email, password) => {
     const res = await API.post("/auth/login", { email, password });
@@ -25,8 +26,18 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("user");
   };
 
+  const submitForm = async (userId, formData) => {
+    const response = await API.post("/applications", { userId, formData });
+    // setApplication(res.data.application);
+    // localStorage(setItem("user", JSON.stringify(res.data.application)));
+  };
+
+  const getForm = async(userId) => {
+    await API.get(`/applications/${userId}`);
+  }
+
   return (
-    <AuthContext.Provider value={{ user, login, signup, forgotPassword, logout }}>
+    <AuthContext.Provider value={{ user, login, signup, forgotPassword, logout, submitForm, getForm, application }}>
       {children}
     </AuthContext.Provider>
   );

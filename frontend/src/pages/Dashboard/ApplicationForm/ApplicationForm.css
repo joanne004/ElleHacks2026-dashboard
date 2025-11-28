@@ -29,8 +29,9 @@ body {
 }
 
 .header h1 {
-  padding-top: 1.5rem;
-  margin-bottom: 0.5rem;
+  padding-top: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
   font-size: 20px;
 }
 
@@ -88,13 +89,14 @@ h2 {
   display: flex;
   flex-direction: column;
   position: relative;
-  top: 40px;
+  top: 25px;
   right: 5rem;
 }
 
 .section-header h2 {
   color: #FFFFFF;
   margin-left: -275px;
+  padding-top: 15px;
   text-align: center;
   bottom: 10px;
   font-weight: bold;

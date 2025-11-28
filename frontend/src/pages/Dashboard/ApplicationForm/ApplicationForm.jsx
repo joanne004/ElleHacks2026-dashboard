@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./ApplicationForm.css";
+import { useAuth } from "../../../context/AuthContext";
 // import Navbar from "../../../components/Navbar/Navbar.jsx";
 
 // Import images from the assets folder
@@ -17,6 +19,8 @@ import york from "../../../assets/ApplicationForm/york-banner.png";
 
 function App() {
 
+  const navigate = useNavigate();
+  const { user, submitForm, getForm, application } = useAuth();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -37,8 +41,25 @@ function App() {
     graduationYear: "",
     fieldOfStudy: "",
     hackathonsAttended: "",
-    attendedElleHacksBefore: "",
+    attendedElleHacksBefore: false,
     yorkStudentNumber: "",
+    resumeUrl: "",
+    shareWithSponsors: false,
+    linkedin: "",
+    github: "",
+    dietaryRestrictions: [],
+    otherDietary: "",
+    tshirtSize: "M",
+    whyElleHacks: "",
+    goals: "",
+    projectStory: "",
+    confirmInPerson: true,
+    overnightStay: true,
+    agreeCodeOfConduct: true,
+    agreeMLHPrivacy: true,
+    agreeMLHComms: true,
+    accessibilityRequests: "",
+    status: "submitted",
   });
 
   const [isNavActive, setIsNavActive] = useState(false);
@@ -46,8 +67,12 @@ function App() {
     setIsNavActive(!isNavActive);
   };
 
+  const [requiredInput, setRequiredInput] = useState(false);
   const [step, setStep] = useState(1);
-  const nextStep = () => setStep((prev) => Math.min(prev + 1, 5));
+  const nextStep = () => { 
+    if (!requiredInput) return; 
+    setStep((prev) => Math.min(prev + 1, 6))
+  };
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
   const handleChange = (e) => {  // Handle form input changes
@@ -65,21 +90,27 @@ function App() {
     }
   };
 
-  const handleSubmit = async () => {  // Submit form data to backend (for now)
+  const handleSubmit = async (e) => {  // Submit form data to backend (for now)
+    e.preventDefault();
     try {
-      const res = await fetch("http://localhost:5000/api/applications", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-      alert(data.message);
+      await submitForm(user.id, formData);
+      navigate('/login');
+      // fetchApplication();
     } catch (error) {
       console.error(error);
       alert("Failed to submit application");
     }
   };
+
+  // const fetchApplication = async () => {
+  //   try {
+  //     const res = await getForm(user.id);
+  //     setFormData(res.application);
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert("Failed to load application");
+  //   }
+  // };
 
   return (
     <div className="App">
@@ -141,7 +172,7 @@ function App() {
             <p className="italics"><strong>I understand that ElleHacks is
               an event for marginalized gender groups. Preference will be given
               to these groups when selecting accepted hackers.*</strong></p>
-            <label><input type="radio" required />Yes, I understand.</label>
+            <label><input type="radio" checked={requiredInput === true} onChange={() => setRequiredInput(true)} required />Yes, I understand.</label>
             <img src={headphones} alt="Headphones" className="decor headphones" />
             <div className="button-row">
               <button className="btnNext" onClick={nextStep}>Next</button>
@@ -313,8 +344,8 @@ function App() {
               <label id="attendedLabel">
                   Have you attended ElleHacks before?*
                   <div className="radio-group">
-                    <label><input type="radio" name="attended" value="Yes" onChange={handleChange} />Yes</label>
-                    <label><input type="radio" name="attended" value="No" onChange={handleChange} />No</label>
+                    <label><input type="radio" name="attended" value={formData.attendedElleHacksBefore} onChange={handleChange} />Yes</label>
+                    <label><input type="radio" name="attended" value={formData.attendedElleHacksBefore} onChange={handleChange} />No</label>
                   </div>
               </label>
 
@@ -338,11 +369,34 @@ function App() {
               <label>Please enter your Student Number below<input type="text" placeholder="" name="yorkStudentNumber" value={formData.yorkStudentNumber} onChange={handleChange} /></label>
               <div className="button-row">
                 <button className="btnBack" onClick={prevStep}>Back</button>
-                <button className="btnNext" onClick={handleSubmit}>Submit</button>
+                <button className="btnNext" onClick={nextStep}>Next</button>
               </div>
           </section>
         </>
-      }   
+      } 
+
+      {step === 6 && 
+      <div>
+        <label>1<input type="text" placeholder="" name="resumeUrl" value={formData.resumeUrl} onChange={handleChange} /></label>
+        <label>2<input type="text" placeholder="" name="shareWithSponsors" value={formData.shareWithSponsors} onChange={handleChange} /></label>
+        <label>3<input type="text" placeholder="" name="linkedin" value={formData.linkedin} onChange={handleChange} /></label>
+        <label>5<input type="text" placeholder="" name="github"value={formData.github} onChange={handleChange} /></label>
+        <label>6<input type="text" placeholder="" name="dietaryRestrictions" value={formData.dietaryRestrictions} onChange={handleChange} /></label>
+        <label>7<input type="text" placeholder="" name="otherDietary" value={formData.otherDietary} onChange={handleChange} /></label>
+        <label>8<input type="text" placeholder="" name="tshirtSize" value={formData.tshirtSize} onChange={handleChange} /></label>
+        <label>9<input type="text" placeholder="" name="whyElleHacks" value={formData.whyElleHacks} onChange={handleChange} /></label>
+        <label>11<input type="text" placeholder="" name="goals" value={formData.goals} onChange={handleChange} /></label>
+        <label>12<input type="text" placeholder="" name="projectStory" value={formData.projectStory} onChange={handleChange} /></label>
+        <label>13<input type="text" placeholder="" name="confirmInPerson" value={formData.confirmInPerson} onChange={handleChange} /></label>
+        <label>14<input type="text" placeholder="" name="overnightStay" value={formData.overnightStay} onChange={handleChange} /></label>
+        <label>15<input type="text" placeholder="" name="agreeCodeOfConduct" value={formData.agreeCodeOfConduct} onChange={handleChange} /></label>
+        <label>16<input type="text" placeholder="" name="agreeMLHComms" value={formData.agreeMLHComms} onChange={handleChange} /></label>
+        <label>17<input type="text" placeholder="" name="accessibilityRequests" value={formData.accessibilityRequests} onChange={handleChange} /></label>
+        <label>18<input type="text" placeholder="" name="status" value={formData.status} onChange={handleChange} /></label>
+        <button className="btnNext" onClick={handleSubmit}>Submit</button>
+      </div>
+      }
+
     </div>
   );
 }
