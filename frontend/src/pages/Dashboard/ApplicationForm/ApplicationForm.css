@@ -1,10 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Nobile:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nobile:wght@400;500;700&display=swap');
+
+html, body {
+  min-height: 100%;
+}
 
 body {
   font-family: 'Nobile', sans-serif;
   background: linear-gradient(#FFF4EE, #BD7777, #CD91A5, #A168A1, #6F4480);
   color: #000000;
   margin: 0;
+  padding: 0;
 }
 
 .App {
@@ -15,16 +20,17 @@ body {
   width: 100%;
   max-width: 1000px;
   margin: 0 auto;
+  margin-top: -5rem;
 }
 
 .header {
   display: flex;
   flex-direction: column;
+  align-items: center;
   text-align: center;
   color: #000000;
-  margin-top: -100px;
   position: relative;
-  top: 35px;
+  top: 25px;
   z-index: 1;
 }
 
@@ -51,6 +57,10 @@ h2 {
   font-weight: lighter;
 }
 
+.italics {
+  font-style: italic;
+}
+
 .deadline {
   font-weight: 500;
   margin-top: 1rem;
@@ -74,23 +84,20 @@ h2 {
 
 .agreement {
   background: #FFFBF6;
-  padding: 1rem 2rem;
+  padding: 1rem;
   border-radius: 20px;
-  position: relative;
-}
-
-.info-card .italics,
-.agreement .italics,
-.form-section .italics {
   font-style: italic;
+  position: relative;
 }
 
 .section-header {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: left;
   position: relative;
-  top: 25px;
-  right: 5rem;
+  top: 40px;
+  right: 85px;
 }
 
 .section-header h2 {
@@ -114,6 +121,22 @@ h2 {
   z-index: 1;
 }
 
+.section-header.york-header {
+  left: 15px;
+}
+
+.section-header.resume-header {
+  left: -50px;
+}
+
+.section-header.event-header {
+  left: -115px;
+}
+
+.section-header.questions-header {
+  left: -115px;
+}
+
 .form-section {
   background: #FFFBF6;
   margin: 2rem auto;
@@ -121,12 +144,6 @@ h2 {
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   position: relative;
-}
-
-.yorku-header {
-  right: 300px;
-  padding-left: 10rem;
-  margin-left: 13rem;
 }
 
 .info-card,
@@ -233,9 +250,49 @@ input, select {
 
 .flask {
   width: 120px;
-  top: -105px;
-  left: 290px;
+  top: 10px;
+  left: 230px;
   z-index: 1;
+}
+
+.file {
+  width: 60px;
+  cursor: pointer;
+}
+
+.gears {
+  width: 120px;
+  margin-left: 200px;
+}
+
+.hats {
+  width: 250px;
+  margin-left: 525px;
+}
+
+.form-section.questions-section {
+  position: relative;
+  z-index: 0;
+}
+
+.cord {
+  position: absolute;
+  top: 10px;
+  width: 850px;
+  z-index: -1;
+}
+
+.mouse {
+  width: 120px;
+  margin-left: 275px;
+  margin-top: 10px;
+  z-index: 1;
+}
+
+.girl {
+  position: relative;
+  width: 20%;
+  top: 75px;
 }
 
 .button-row {
@@ -251,6 +308,7 @@ input, select {
 
 .btnBack, .btnNext {
   font-family: 'Nobile', sans-serif;
+  padding: 0.6em 1.2em;
   color: #FFFFFF;
   background-color: #BD7777;
   width: 75px;
@@ -263,9 +321,15 @@ input, select {
   transition: background-color 0.2s ease;
   display: flex;
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
 }
 
 .btnBack:hover, .btnNext:hover {
   background-color: #a66565;
+}
+
+.btnNext:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+  opacity: 0.8;
 }

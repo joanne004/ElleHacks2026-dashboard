@@ -16,6 +16,7 @@ const Sidebar = () => {
 
   const handleLogout = async (e) => {
     localStorage.removeItem('authToken'); 
+    localStorage.clear();
     navigate('/login'); // redirect to login page
     setIsMobileMenuOpen(false);
   };

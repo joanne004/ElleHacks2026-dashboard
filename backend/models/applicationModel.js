@@ -72,8 +72,8 @@ const applicationSchema = new mongoose.Schema({
   // ---- Status ----
   status: { 
     type: String, 
-    enum: ["submitted", "reviewing", "accepted", "waitlist", "rejected"], 
-    default: "submitted" 
+    enum: ["draft", "submitted", "reviewing", "accepted", "waitlist", "rejected"], 
+    default: "draft" 
   }
 }, { timestamps: true });
 
