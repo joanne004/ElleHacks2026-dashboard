@@ -26,8 +26,13 @@ import final from "../../../assets/ApplicationForm/final-banner.png";
 import girl from "../../../assets/ApplicationForm/girl-laptop.png";
 
 function App() {
+
+  const [agreement, setAgreement] = useState(() => {
+    const saved = localStorage.getItem("agreement");
+    return saved === "true";
+  });
+
   const savedData = JSON.parse(localStorage.getItem("formData")) || {
-    agreement: "",
     firstName: "",
     lastName: "",
     preferredFirstName: "",
@@ -47,30 +52,35 @@ function App() {
     graduationYear: "",
     fieldOfStudy: "",
     hackathonsAttended: "",
-    attendedElleHacksBefore: "",
+    attendedElleHacksBefore: null,
     yorkStudentNumber: "",
-    recruit: "",
+    resumeUrl: "",
+    shareWithSponsors: null,
     linkedin: "",
     github: "",
     dietaryRestrictions: [],
-    otherDiet: "",
-    tShirtSize: "",
+    otherDietary: "",
+    tshirtSize: "",
     whyElleHacks: "",
-    hopeToAchieve: "",
-    projectWorked: "",
-    confirm: "",
-    overnight: "",
-    codeOfConduct: "",
-    policies: "",
-    MLHauthorized: "",
-    requests: ""
+    goals: "",
+    projectStory: "",
+    confirmInPerson: false,
+    overnightStay: null,
+    agreeCodeOfConduct: false,
+    agreeMLHPrivacy: false,
+    agreeMLHComms: false,
+    accessibilityRequests: "",
+    status: "draft",
   };
+
   const [formData, setFormData] = useState(savedData);
+  const resumeData = new FormData();
+  resumeData.append('resumeUrl', formData.resumeUrl);
 
   const isStepValid = () => {
     switch (step) {
       case 1:
-        return formData.agreement !== "";
+        return agreement === true;
       case 2:
         return (
           formData.firstName &&
@@ -96,18 +106,35 @@ function App() {
           formData.graduationYear &&
           formData.fieldOfStudy &&
           formData.hackathonsAttended &&
-          formData.attended // radio for ElleHacks before
+          (formData.attendedElleHacksBefore !== null)
         );
       case 5:
-        return formData.yorkStudentNumber;
+        return (
+          formData.yorkStudentNumber
+        );
       case 6:
-        return formData.resumeFile && formData.recruit;
+        return (
+          formData.resumeUrl && 
+          (formData.shareWithSponsors !== null)
+        );
       case 7:
-        return formData.tShirtSize && formData.dietaryRestrictions.length > 0;
+        return (
+          (formData.tshirtSize !== "") && 
+          formData.dietaryRestrictions.length > 0
+        );
       case 8:
-        return formData.whyElleHacks && formData.hopeToAchieve && formData.projectWorked;
+        return (
+          formData.whyElleHacks && 
+          formData.goals && 
+          formData.projectStory
+        );
       case 9:
-        return formData.ableToAttend && formData.overnight && formData.codeOfConduct && formData.policies;
+        return (
+          formData.confirmInPerson && 
+          (formData.overnightStay !== null) && 
+          formData.agreeCodeOfConduct && 
+          formData.agreeMLHPrivacy 
+        );
       default:
         return false;
     }
@@ -133,6 +160,7 @@ function App() {
 
   const handleChange = (e) => {  // Handle form input changes
     const { name, value, type, checked } = e.target;
+
     const checkboxes = ["ethnicity", "dietaryRestrictions"]; // Handle checkbox groups as arrays
 
     if (type === "checkbox" && checkboxes.includes(name)) {
@@ -140,15 +168,32 @@ function App() {
           ? [...formData[name], value]
           : formData[name].filter((item) => item !== value);
       
-      setFormData((prev) => {
-        const updated= {...prev, [name]: newValues};
+    setFormData((prev) => {
+        const updated = {...prev, [name]: newValues};
         localStorage.setItem("formData", JSON.stringify(updated));
         return updated;
       });
       return;
     }
+
+    // For agreeMLHComms
+    if (type === "checkbox") {
+      setFormData(prev => {
+        const updated = { ...prev, [name]: checked };
+        localStorage.setItem("formData", JSON.stringify(updated));
+        return updated;
+      });
+      return;
+    }
+
+    let newValue = value;
+    if (type == "radio" || name == "agreeMLHComms") {
+      if (value === "true") newValue = true;
+      if (value === "false") newValue = false;
+    }
+
     setFormData((prev) => {
-      const updated = { ...prev, [name]: value }; // Normal inputs
+      const updated = { ...prev, [name]: newValue }; // Normal inputs
       localStorage.setItem("formData", JSON.stringify(updated));
       return updated;
     });
@@ -230,7 +275,7 @@ function App() {
             <p><strong>I understand that ElleHacks is
               an event for marginalized gender groups. Preference will be given
               to these groups when selecting accepted hackers.*</strong></p>
-            <label><input type="radio" name="agreement" value="Yes" onChange={handleChange} required />Yes, I understand.</label>
+            <label><input type="radio" name="agreement" value="true" checked={agreement} onChange={() => {setAgreement(true); localStorage.setItem("agreement", "true")}} required />Yes, I understand.</label>
             <img src={headphones} alt="Headphones" className="decor headphones" />
             <div className="button-row">
               <button className="btnNext" onClick={nextStep} disabled={!isStepValid()}>Next</button>
@@ -324,33 +369,33 @@ function App() {
                   <p><strong>Do you identify as a person with a disability as described in the Accessible Canada Act?</strong></p>
                 </div>
                 <div className="radio-group">
-                  <label><input type="radio" name="disability" value="Yes" onChange={handleChange} />Yes</label>
-                  <label><input type="radio" name="disability" value="No" onChange={handleChange} />No</label>
-                  <label><input type="radio" name="disability" value="Prefer not to answer" onChange={handleChange} />Prefer not to answer</label>
+                  <label><input type="radio" name="disability" value="Yes" checked={formData.disability === "Yes"} onChange={handleChange} />Yes</label>
+                  <label><input type="radio" name="disability" value="No" checked={formData.disability === "No"} onChange={handleChange} />No</label>
+                  <label><input type="radio" name="disability" value="Prefer not to answer" checked={formData.disability === "Prefer not to answer"} onChange={handleChange} />Prefer not to answer</label>
                 </div>
 
                 <div className="radio-block">
                   <p><strong>Do you identify as First Nations, Inuit, and/or Métis?</strong></p>
                 </div>
                 <div className="radio-group">
-                  <label><input type="radio" name="indigenousIdentity" value="Yes" onChange={handleChange} />Yes</label>
-                  <label><input type="radio" name="indigenousIdentity" value="No" onChange={handleChange} />No</label>
-                  <label><input type="radio" name="indigenousIdentity" value="Prefer not to answer" onChange={handleChange} />Prefer not to answer</label>
+                  <label><input type="radio" name="indigenousIdentity" value="Yes" checked={formData.indigenousIdentity === "Yes"} onChange={handleChange} />Yes</label>
+                  <label><input type="radio" name="indigenousIdentity" value="No" checked={formData.indigenousIdentity === "No"} onChange={handleChange} />No</label>
+                  <label><input type="radio" name="indigenousIdentity" value="Prefer not to answer" checked={formData.indigenousIdentity === "Prefer not to answer"}  onChange={handleChange} />Prefer not to answer</label>
                 </div>
 
                 <p><strong>Which of the following ethnic or racial categories best describes how you self-identity? Select all that apply.</strong></p>
                 <div className="checkbox-grid">
-                  <label><input type="checkbox" name="ethnicity" value="Black" onChange={handleChange} />Black [African, African-Canadian, Afro-Caribbean descent]</label>
-                  <label><input type="checkbox" name="ethnicity" value="East Asian" onChange={handleChange} />East Asian [Chinese, Japanese, Korean, Taiwanese descent]</label>
-                  <label><input type="checkbox" name="ethnicity" value="Indigenous" onChange={handleChange} />Indigenous [First Nations, Inuk/Inuit, Métis]</label>
-                  <label><input type="checkbox" name="ethnicity" value="Latin American" onChange={handleChange} />Latin American [Hispanic or Latin American descent]</label>
-                  <label><input type="checkbox" name="ethnicity" value="Middle Eastern" onChange={handleChange} />Middle Eastern [Arab, Persian, West Asian descent (e.g. Afghan, Egyptian, Iranian, Kurdish, Lebanese, Turkish)]</label>
-                  <label><input type="checkbox" name="ethnicity" value="South Asian" onChange={handleChange} />South Asian [South Asian descent (e.g., Bangladeshi, Indian, Indo-Caribbean, Pakistani, Sri Lankan)]</label>
-                  <label><input type="checkbox" name="ethnicity" value="Southeast Asian" onChange={handleChange} />Southeast Asian [Cambodian, Filipino, Indonesian, Thai, Vietnamese, or other Southeast Asian descent]</label>
-                  <label><input type="checkbox" name="ethnicity" value="Caucasian" onChange={handleChange} />Caucasian [European descent]</label>
-                  <label><input type="checkbox" name="ethnicity" value="Prefer not to answer" onChange={handleChange} />Prefer not to answer</label>
+                  <label><input type="checkbox" name="ethnicity" value="Black" checked={formData.ethnicity.includes("Black")} onChange={handleChange} />Black [African, African-Canadian, Afro-Caribbean descent]</label>
+                  <label><input type="checkbox" name="ethnicity" value="East Asian" checked={formData.ethnicity.includes("East Asian")} onChange={handleChange} />East Asian [Chinese, Japanese, Korean, Taiwanese descent]</label>
+                  <label><input type="checkbox" name="ethnicity" value="Indigenous" checked={formData.ethnicity.includes("Indigenous")} onChange={handleChange} />Indigenous [First Nations, Inuk/Inuit, Métis]</label>
+                  <label><input type="checkbox" name="ethnicity" value="Latin American" checked={formData.ethnicity.includes("Latin American")} onChange={handleChange} />Latin American [Hispanic or Latin American descent]</label>
+                  <label><input type="checkbox" name="ethnicity" value="Middle Eastern" checked={formData.ethnicity.includes("Middle Eastern")} onChange={handleChange} />Middle Eastern [Arab, Persian, West Asian descent (e.g. Afghan, Egyptian, Iranian, Kurdish, Lebanese, Turkish)]</label>
+                  <label><input type="checkbox" name="ethnicity" value="South Asian" checked={formData.ethnicity.includes("South Asian")} onChange={handleChange} />South Asian [South Asian descent (e.g., Bangladeshi, Indian, Indo-Caribbean, Pakistani, Sri Lankan)]</label>
+                  <label><input type="checkbox" name="ethnicity" value="Southeast Asian" checked={formData.ethnicity.includes("Southeast Asian")} onChange={handleChange} />Southeast Asian [Cambodian, Filipino, Indonesian, Thai, Vietnamese, or other Southeast Asian descent]</label>
+                  <label><input type="checkbox" name="ethnicity" value="Caucasian" checked={formData.ethnicity.includes("Caucasian")} onChange={handleChange} />Caucasian [European descent]</label>
+                  <label><input type="checkbox" name="ethnicity" value="Prefer not to answer" checked={formData.ethnicity.includes("Prefer not to answer")} onChange={handleChange} />Prefer not to answer</label>
                   <label>
-                    <input type="checkbox" id="other" name="ethnicity" value="Other" onChange={handleChange} />
+                    <input type="checkbox" id="other" name="ethnicity" value="Other" checked={formData.ethnicity.includes("Other")} onChange={handleChange} />
                     Other: <input type="text" id="otherText" name="otherEthnicity" value={formData.otherEthnicity} onChange={handleChange} />
                   </label>
                 </div>
@@ -358,6 +403,7 @@ function App() {
                 <div className="button-row">
                   <button className="btnBack" onClick={prevStep}>Back</button>
                   <button className="btnNext" onClick={nextStep} disabled={!isStepValid()}>Next</button>
+                  {console.log(formData.ethnicity)}
                 </div>
             </section>
         </>
@@ -402,8 +448,8 @@ function App() {
               <label id="attendedLabel">
                   Have you attended ElleHacks before?*
                   <div className="radio-group">
-                    <label><input type="radio" name="attended" value="Yes" onChange={handleChange} />Yes</label>
-                    <label><input type="radio" name="attended" value="No" onChange={handleChange} />No</label>
+                    <label><input type="radio" name="attendedElleHacksBefore" value="true" checked={formData.attendedElleHacksBefore === true} onChange={handleChange} />Yes</label>
+                    <label><input type="radio" name="attendedElleHacksBefore" value="false" checked={formData.attendedElleHacksBefore === false} onChange={handleChange} />No</label>
                   </div>
               </label>
 
@@ -447,12 +493,12 @@ function App() {
             <input 
               type="file"
               id="fileUpload" 
-              name="fileUpload" 
+              name="resumeUrl" 
               accept="application/pdf" 
               onChange={(e) => 
                 setFormData((prev) => ({
                 ...prev,
-                resumeFile: e.target.files[0]
+                resumeUrl: e.target.files[0]
                 }))
               } style={{ display: "none" }} required />
             <br /><br />
@@ -460,15 +506,15 @@ function App() {
             <br />
             <div className="radio-group">
               <div className="checkbox-grid">
-                <label><input type="radio" name="recruit" value="Yes" onChange={handleChange} />Yes, you can share this information with sponsors.</label>
-                <label><input type="radio" name="recruit" value="No" onChange={handleChange} />No, you cannot share this information with sponsors.</label>
+                <label><input type="radio" name="shareWithSponsors" value="true" checked={formData.shareWithSponsors === true} onChange={handleChange} />Yes, you can share this information with sponsors.</label>
+                <label><input type="radio" name="shareWithSponsors" value="false" checked={formData.shareWithSponsors === false} onChange={handleChange} />No, you cannot share this information with sponsors.</label>
               </div>
               <img src={gears} alt="Gears" className="gears" />
             </div>
             <br />
             <label><b>If you have a LinkedIn / Portfolio Link, you can provide the link here</b><input type="text" name="linkedin" value={formData.linkedin} onChange={handleChange} /></label>
             <br />
-            <label><b>If you have a GitHub account, you can provide the link here</b><input type="text" name="githuub" value={formData.github} onChange={handleChange} /></label>
+            <label><b>If you have a GitHub account, you can provide the link here</b><input type="text" name="github" value={formData.github} onChange={handleChange} /></label>
             <div className="button-row">
               <button className="btnBack" onClick={prevStep}>Back</button>
               <button className="btnNext" onClick={nextStep} disabled={!isStepValid()}>Next</button>
@@ -490,15 +536,15 @@ function App() {
             <p className="italics">If you have any allergies, please specify under 'Other'</p>
             <br />
             <div className="checkbox-grid">
-              <label><input type="checkbox" name="dietaryRestrictions" value="No" onChange={handleChange} />No, I do not have any dietary restrictions</label>
-              <label><input type="checkbox" name="dietaryRestrictions" value="Halal" onChange={handleChange} />Halal</label>
-              <label><input type="checkbox" name="dietaryRestrictions" value="Vegan" onChange={handleChange} />Vegan (includes vegetarian & kosher)</label>
-              <label><input type="checkbox" name="dietaryRestrictions" value="Gluten-Free" onChange={handleChange} />Gluten-Free</label>
-              <label><input type="checkbox" name="dietaryRestrictions" value="Dairy-Free" onChange={handleChange} />Dairy-Free</label>
-              <label><input type="checkbox" name="dietaryRestrictions" value="Allergies" onChange={handleChange} />Allergies</label>
+              <label><input type="checkbox" name="dietaryRestrictions" value="No" checked={formData.dietaryRestrictions.includes("No")} onChange={handleChange} />No, I do not have any dietary restrictions</label>
+              <label><input type="checkbox" name="dietaryRestrictions" value="Halal" checked={formData.dietaryRestrictions.includes("Halal")} onChange={handleChange} />Halal</label>
+              <label><input type="checkbox" name="dietaryRestrictions" value="Vegan" checked={formData.dietaryRestrictions.includes("Vegan")} onChange={handleChange} />Vegan (includes vegetarian & kosher)</label>
+              <label><input type="checkbox" name="dietaryRestrictions" value="Gluten-Free" checked={formData.dietaryRestrictions.includes("Gluten-Free")} onChange={handleChange} />Gluten-Free</label>
+              <label><input type="checkbox" name="dietaryRestrictions" value="Dairy-Free" checked={formData.dietaryRestrictions.includes("Dairy-Free")} onChange={handleChange} />Dairy-Free</label>
+              <label><input type="checkbox" name="dietaryRestrictions" value="Allergies" checked={formData.dietaryRestrictions.includes("Allergies")} onChange={handleChange} />Allergies</label>
               <label>
-                <input type="checkbox" id="other" name="dietary" value="Other" onChange={handleChange} />
-                Other: <input type="text" id="otherText" name="otherDiet" value={formData.otherDiet} onChange={handleChange} />
+                <input type="checkbox" id="other" name="dietaryRestrictions" value="Other" checked={formData.dietaryRestrictions.includes("Other")} onChange={handleChange} />
+                Other: <input type="text" id="otherText" name="otherDietary" value={formData.otherDietary} onChange={handleChange} />
               </label>
             </div>
             <br /><br />
@@ -506,11 +552,11 @@ function App() {
             <br />
             <div className="radio-group">
               <div className="checkbox-grid">
-                <label><input type="radio" name="tShirtSize" value="XS" onChange={handleChange} />XS</label>
-                <label><input type="radio" name="tShirtSize" value="S" onChange={handleChange} />S</label>
-                <label><input type="radio" name="tShirtSize" value="M" onChange={handleChange} />M</label>
-                <label><input type="radio" name="tShirtSize" value="L" onChange={handleChange} />L</label>
-                <label><input type="radio" name="tShirtSize" value="XL" onChange={handleChange} />XL</label>
+                <label><input type="radio" name="tshirtSize" value="XS" checked={formData.tshirtSize === "XS"} onChange={handleChange} />XS</label>
+                <label><input type="radio" name="tshirtSize" value="S" checked={formData.tshirtSize === "S"} onChange={handleChange} />S</label>
+                <label><input type="radio" name="tshirtSize" value="M" checked={formData.tshirtSize === "M"} onChange={handleChange} />M</label>
+                <label><input type="radio" name="tshirtSize" value="L" checked={formData.tshirtSize === "L"} onChange={handleChange} />L</label>
+                <label><input type="radio" name="tshirtSize" value="XL" checked={formData.tshirtSize === "XL"} onChange={handleChange} />XL</label>
               </div>
               <img src={hats} alt="Hats" className="hats" />
             </div>
@@ -537,12 +583,12 @@ function App() {
              <br /><br /><br/>
             <b>What do you hope to achieve during the hackathon?*</b>
             <br /><br /><br />
-            <textarea id="whyElleHacks" name="hopeToAchieve" value={formData.hopeToAchieve} onChange={handleChange} rows="9" style={{width: "100%"}}/>
+            <textarea id="whyElleHacks" name="goals" value={formData.goals} onChange={handleChange} rows="9" style={{width: "100%"}}/>
             <br /><br /><br/>
             <b>Tell us about a project/assignment you worked on that you're proud of, 
               or one that totally broke and taught you something anyway.*</b>
             <br /><br /><br />
-            <textarea id="whyElleHacks" name="projectWorked" value={formData.projectWorked} onChange={handleChange} rows="9" style={{width: "100%"}}/>
+            <textarea id="whyElleHacks" name="projectStory" value={formData.projectStory} onChange={handleChange} rows="9" style={{width: "100%"}}/>
             <img src={cord} alt="Mouse Cord" className="cord" />
             <img src={mouse} alt="Mouse" className="mouse" />
             <div className="button-row">
@@ -566,18 +612,18 @@ function App() {
             <br />
             <p>(4700 Keele St, Toronto, ON, Canada, M3J 1P3)<b>*</b></p>
             <div className="radio-group">
-              <label><input type="radio" name="ableToAttend" value="Yes" onChange={handleChange} />I am able to attend ElleHacks in-person at York University.</label>
+              <label><input type="radio" name="confirmInPerson" value="true" checked={formData.confirmInPerson === true} onChange={handleChange} />I am able to attend ElleHacks in-person at York University.</label>
             </div>
             <br /><br /><br />
             <b>Will you require overnight accommendations at ElleHacks?</b> (ie. a quiet place to sleep)<b>*</b>
             <div className="checkbox-grid">
-              <label><input type="radio" name="overnight" value="Yes" onChange={handleChange} />Yes, I will be staying overnight for some or all of ElleHacks.</label>
-              <label><input type="radio" name="overnight" value="No" onChange={handleChange} />No, I will not be staying overnight for ElleHacks. I will commute to and from the event each day.</label>
+              <label><input type="radio" name="overnightStay" value="true" checked={formData.overnightStay === true} onChange={handleChange} />Yes, I will be staying overnight for some or all of ElleHacks.</label>
+              <label><input type="radio" name="overnightStay" value="false" checked={formData.overnightStay === false} onChange={handleChange} />No, I will not be staying overnight for ElleHacks. I will commute to and from the event each day.</label>
             </div>
             <br /><br /><br/>
             <b>I have read and agree to the <a href="https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md">MLH Code of Conduct</a>.*</b>
             <div className="radio-group">
-              <label><input type="radio" name="codeOfConduct" value="Yes" onChange={handleChange} />I have read and agreed to the MLH Code of Conduct.</label>
+              <label><input type="radio" name="agreeCodeOfConduct" value="true" checked={formData.agreeCodeOfConduct === true} onChange={handleChange} />I have read and agreed to the MLH Code of Conduct.</label>
             </div>
             <br /><br /><br/>
             <b>
@@ -587,18 +633,18 @@ function App() {
               <a href="https://www.mlh.com/privacy">MLH Privacy Policy</a>.
             </b>
             <div className="radio-group">
-              <label><input type="radio" name="policies" value="Yes" onChange={handleChange} />I agree.</label>
+              <label><input type="radio" name="agreeMLHPrivacy" value="true" checked={formData.agreeMLHPrivacy === true} onChange={handleChange} />I agree.</label>
             </div>
             <br /><br /><br/>
             <b>I authorize MLH to send me occasional emails about relevant events, career opportunities, and community annoucements.</b> [OPTIONAL]
             <div className="checkbox-grid">
-              <label><input type="checkbox" name="emailSignup" value="Yes" onChange={handleChange} />I agree.</label>
+              <label><input type="checkbox" name="agreeMLHComms" checked={formData.agreeMLHComms} onChange={handleChange} />I agree.</label>
             </div>
             <br /><br />
             <b>... and we're done! Anything else you'd like to let us know?</b>
             <p className="italics">If you have any accessibility requests or concerns, please let us know here.</p>
             <br />
-            <textarea id="requests" name="requests" value={formData.requests} onChange={handleChange} rows="10" style={{width: "100%"}}/>
+            <textarea id="requests" name="accessibilityRequests" value={formData.accessibilityRequests} onChange={handleChange} rows="10" style={{width: "100%"}}/>
               <img src={girl} alt="Girl Laptop" className="girl" />
               <div className="button-row">
                 <button className="btnBack" onClick={prevStep}>Back</button>

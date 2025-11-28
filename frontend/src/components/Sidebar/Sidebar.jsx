@@ -9,6 +9,7 @@ const Sidebar = () => {
   const handleLogout = () => {
     // Optional: clear auth info
     localStorage.removeItem('authToken'); 
+    localStorage.clear();
     navigate('/login'); // redirect to login page
   };
 
