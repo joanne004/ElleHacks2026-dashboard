@@ -35,9 +35,8 @@ body {
 }
 
 .header h1 {
-  padding-top: 2rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
+  padding-top: 1.5rem;
+  margin-bottom: 0.5rem;
   font-size: 20px;
 }
 
@@ -103,7 +102,6 @@ h2 {
 .section-header h2 {
   color: #FFFFFF;
   margin-left: -275px;
-  padding-top: 15px;
   text-align: center;
   bottom: 10px;
   font-weight: bold;
@@ -332,4 +330,14 @@ input, select {
   background-color: #555;
   cursor: not-allowed;
   opacity: 0.8;
+}
+
+.status-page {
+  position: absolute;
+  top: 40vh;
+  font-size: 30px;
+  width: 50vw;
+  background-color: white;
+  text-align: center;
+  padding: 10px;
 }

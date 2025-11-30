@@ -46,7 +46,7 @@ const applicationSchema = new mongoose.Schema({
   yorkStudentNumber: { type: String },
 
   // ---- Resume & Links ----
-  resumeUrl: { type: String },
+  resumeUrl: { type: Object },
   shareWithSponsors: { type: Boolean, default: false },
   linkedin: { type: String },
   github: { type: String },

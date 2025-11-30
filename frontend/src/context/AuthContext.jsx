@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const getForm = async(userId) => {
-    await API.get(`/applications/${userId}`);
+    return await API.get(`/applications/${userId}`);
   }
 
   return (

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./ApplicationForm.css";
 import { useAuth } from "../../../context/AuthContext";
 // import Navbar from "../../../components/Navbar/Navbar.jsx";
+import Sidebar from '../../../components/Sidebar/Sidebar.jsx';
 
 // Import images from the assets folder
 import partyPopper from "../../../assets/ApplicationForm/party-popper.png";
@@ -29,6 +30,7 @@ import girl from "../../../assets/ApplicationForm/girl-laptop.png";
 
 function App() {
 
+  const { user, submitForm, getForm } = useAuth();
   const [agreement, setAgreement] = useState(() => {
     const saved = localStorage.getItem("agreement");
     return saved === "true";
@@ -76,8 +78,6 @@ function App() {
   };
 
   const [formData, setFormData] = useState(savedData);
-  const resumeData = new FormData();
-  resumeData.append('resumeUrl', formData.resumeUrl);
 
   const isStepValid = () => {
     switch (step) {
@@ -153,7 +153,7 @@ function App() {
   const nextStep = () => {
     if (isStepValid()) {
       setStep((prev) => {
-        const next = Math.min(prev + 1, 9);
+        const next = Math.min(prev + 1, 10);
         localStorage.setItem("step", next);
         return next;
       });
@@ -201,30 +201,50 @@ function App() {
     });
   };
 
-  const handleSubmit = async (e) => {  // Submit form data to backend (for now)
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const updatedData = { ...formData, status: "submitted" };
+
+    setFormData(updatedData);
+    localStorage.setItem("formData", JSON.stringify(updatedData));
+
+    nextStep();
+
     try {
-      await submitForm(user.id, formData);
-      navigate('/login');
-      // fetchApplication();
+      await submitForm(user.id, updatedData); 
     } catch (error) {
       console.error(error);
       alert("Failed to submit application");
     }
+  };  
+
+useEffect(() => {
+  const fetchApplication = async () => {
+    try {
+      const res = await getForm(user.id);
+      setAgreement(true);
+      localStorage.setItem("agreement", "true");
+      setFormData(res.data); 
+      if (res.data.status !== 'draft') {
+        setStep(10);
+      }
+    } catch (error) {
+      if (error.response?.status !== 404) {
+        console.error(error);
+        alert("Failed to load application");
+      }
+    }
   };
 
-  // const fetchApplication = async () => {
-  //   try {
-  //     const res = await getForm(user.id);
-  //     setFormData(res.application);
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert("Failed to load application");
-  //   }
-  // };
+  if (user?.id) {
+    fetchApplication();
+  }
+}, [user.id]);
 
   return (
     <div className="App">
+      <Sidebar data={formData} />
       {/* <Navbar /> */}
       {/* Header Section */}
       <header className="header">
@@ -411,7 +431,6 @@ function App() {
                 <div className="button-row">
                   <button className="btnBack" onClick={prevStep}>Back</button>
                   <button className="btnNext" onClick={nextStep} disabled={!isStepValid()}>Next</button>
-                  {console.log(formData.ethnicity)}
                 </div>
             </section>
         </>
@@ -498,17 +517,46 @@ function App() {
             <b>Upload your resume here, named in the following format*</b>
             <p>LastName_FirstName.pdf</p><p className="italics">Example: Doe_Jane.pdf</p>
             <label htmlFor="fileUpload" className="fileUpload"><img src={file} alt="Folder" className="file" /></label>
+            {/* <input 
+              type="file"
+              id="fileUpload" 
+              name="resumeUrl" 
+              accept="application/pdf" 
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                setFormData((prev) => {
+                const updated = { ...prev, resumeUrl: file };
+
+                localStorage.setItem("formData",
+                JSON.stringify({
+                ...prev,
+                resumeUrl: file.name
+                }));
+
+                return updated;
+              });
+            }}
+            style={{ display: "none" }} required /> */}
             <input 
               type="file"
               id="fileUpload" 
               name="resumeUrl" 
               accept="application/pdf" 
-              onChange={(e) => 
-                setFormData((prev) => ({
-                ...prev,
-                resumeUrl: e.target.files[0]
-                }))
-              } style={{ display: "none" }} required />
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  setFormData((prev) => ({
+                    ...prev,
+                    resumeUrl: file
+                }));
+                }
+              }}
+              style={{ display: "none" }} required />
+              {formData.resumeUrl &&
+                <p>{formData.resumeUrl.name}</p>
+              }
             <br /><br />
             <b>Can we share your resume & form responses with our sponsors for recruitment opportunities?</b>
             <br />
@@ -661,6 +709,16 @@ function App() {
           </section>
         </>
       }
+
+      {step === 10 &&
+      <>
+        <section className="status-page">
+          <p>Hooray! Your application has been submitted. Your current status is: <b>{formData.status}</b>.</p> 
+          <p>Check back anytime to follow your application’s progress.</p>
+        </section> 
+      </>
+      }
+
     </div>
   );
 }

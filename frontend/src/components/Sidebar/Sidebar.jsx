@@ -9,12 +9,22 @@ import iconSponsors from '../../assets/coin-hand.png';
 import iconContact from '../../assets/email.png';
 import iconFaq from '../../assets/message-chat-01.png';
 
-const Sidebar = () => {
-  const { submitForm } = useAuth(); 
+const Sidebar = (props) => {
+  const { user, submitForm } = useAuth(); 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate(); // <-- create navigate function
+  const formData = props.data;
 
   const handleLogout = async (e) => {
+    e.preventDefault();
+    console.log(props.data);
+    try {
+      await submitForm(user.id, formData);
+      // fetchApplication();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to submit application");
+    }
     localStorage.removeItem('authToken'); 
     localStorage.clear();
     navigate('/login'); // redirect to login page
