@@ -8,6 +8,7 @@ import iconHome from '../../assets/Home.png';
 import iconSponsors from '../../assets/coin-hand.png';
 import iconContact from '../../assets/email.png';
 import iconFaq from '../../assets/message-chat-01.png';
+import iconAppForm from '../../assets/appForm.png';
 
 const Sidebar = (props) => {
   const { user, submitForm } = useAuth(); 
@@ -81,7 +82,7 @@ const Sidebar = (props) => {
               className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}
               onClick={handleNavClick}
             >
-              <img src={iconContact} alt="Application Form" className={styles.icon} />
+              <img src={iconAppForm} alt="Application Form" className={styles.icon} />
               <span className={styles.label}>Application Form</span>
             </NavLink>
           </li>
@@ -130,7 +131,7 @@ const Sidebar = (props) => {
             <span>Contact</span>
           </NavLink>
           <NavLink to="/dashboard/application-form" className={styles.mobileLink} onClick={handleNavClick}>
-            <img src={iconContact} alt="Application Form" className={styles.icon} />
+            <img src={iconAppForm} alt="Application Form" className={styles.icon} />
             <span>Application Form</span>
           </NavLink>
           <NavLink to="/dashboard/faq" className={styles.mobileLink} onClick={handleNavClick}>
