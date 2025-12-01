@@ -209,7 +209,7 @@ function App() {
     setFormData(updatedData);
     localStorage.setItem("formData", JSON.stringify(updatedData));
 
-    nextStep();
+    
 
     try {
       await submitForm(user.id, updatedData); 
@@ -217,6 +217,7 @@ function App() {
       console.error(error);
       alert("Failed to submit application");
     }
+    nextStep();
   };  
 
 useEffect(() => {

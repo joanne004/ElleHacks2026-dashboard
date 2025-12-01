@@ -1,6 +1,7 @@
 import express from "express";
 import Application from "../models/applicationModel.js";
 import User from "../models/userModel.js";
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
@@ -9,52 +10,66 @@ const router = express.Router();
  * @desc    Create or update a user's application
  * @access  Public (can make it protected later using JWT)
  */
-router.post("/", async (req, res) => {
+router.post("/", upload.single("resume"), async (req, res) => {
   try {
-    const { userId, formData } = req.body;
+    console.log("🔥 Incoming POST /api/applications");
+    console.log("req.body:", req.body);
+    console.log("req.file:", req.file);
 
-    if (!userId) {
-      return res.status(400).json({ message: "User ID is required" });
-    }
+    const data = {
+      user: req.body.userId,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      preferredFirstName: req.body.preferredFirstName,
+      pronouns: req.body.pronouns,
+      email: req.body.email,
+      phone: req.body.phone,
+      ageOnEvent: req.body.ageOnEvent,
+      country: req.body.country,
+      province: req.body.province,
+      city: req.body.city,
+      disability: req.body.disability,
+      indigenousIdentity: req.body.indigenousIdentity,
+      ethnicity: req.body.ethnicity, // array
+      otherEthnicity: req.body.otherEthnicity,
+      levelOfStudy: req.body.levelOfStudy,
+      school: req.body.school,
+      graduationYear: req.body.graduationYear,
+      fieldOfStudy: req.body.fieldOfStudy,
+      hackathonsAttended: req.body.hackathonsAttended,
+      attendedElleHacksBefore: req.body.attendedElleHacksBefore,
+      yorkStudentNumber: req.body.yorkStudentNumber,
+      shareWithSponsors: req.body.shareWithSponsors,
+      linkedin: req.body.linkedin,
+      github: req.body.github,
+      dietaryRestrictions: req.body.dietaryRestrictions, // array
+      otherDietary: req.body.otherDietary,
+      tshirtSize: req.body.tshirtSize,
+      whyElleHacks: req.body.whyElleHacks,
+      goals: req.body.goals,
+      projectStory: req.body.projectStory,
+      confirmInPerson: req.body.confirmInPerson,
+      overnightStay: req.body.overnightStay,
+      agreeCodeOfConduct: req.body.agreeCodeOfConduct,
+      agreeMLHPrivacy: req.body.agreeMLHPrivacy,
+      agreeMLHComms: req.body.agreeMLHComms,
+      accessibilityRequests: req.body.accessibilityRequests,
+      status: req.body.status,
+      resumeUrl: req.file ? `/uploads/resumes/${req.file.filename}` : null
+    };
 
-    // Check if user exists
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    const app = new Application(data);
+    await app.save();
 
-    // Check if the user already has an application
-    let application = await Application.findOne({ user: userId });
+    res.status(201).json(app);
 
-    if (application) {
-      // Update existing application
-      application = await Application.findOneAndUpdate(
-        { user: userId },
-        { $set: formData },
-        { new: true }
-      );
-      return res.status(200).json({ message: "Application updated", application });
-    } else {
-      // Create a new application
-      const newApplication = await Application.create({
-        user: userId,
-        ...formData,
-      });
-
-      // Link it to the user
-      user.application = newApplication._id;
-      await user.save();
-
-      return res.status(201).json({
-        message: "Application submitted successfully",
-        application: newApplication,
-      });
-    }
-  } catch (error) {
-    console.error("❌ Error submitting application:", error.message);
-    res.status(500).json({ message: "Server error", error: error.message });
+  } catch (err) {
+    console.warn("❌ APPLICATION POST ERROR:", err);
+    res.status(500).json({ message: "Failed to submit application", error: err.message });
   }
+
 });
+
 
 /**
  * @route   GET /api/applications/:userId
