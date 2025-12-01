@@ -26,15 +26,81 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("user");
   };
 
+  // ---------------------------------------------------------
+  // 🔥🔥🔥 ADDING LOGS TO SUBMIT FORM
+  // ---------------------------------------------------------
   const submitForm = async (userId, formData) => {
-    const response = await API.post("/applications", { userId, formData });
-    // setApplication(res.data.application);
-    // localStorage(setItem("user", JSON.stringify(res.data.application)));
-  };
 
-  const getForm = async(userId) => {
+    console.log("📥 submitForm() CALLED");
+    console.log("👉 userId RECEIVED:", userId);
+    console.log("👉 formData RECEIVED:", formData);
+
+    const data = new FormData();
+    data.append("userId", userId);
+
+    // Log after appending userId
+    console.log("📌 Added userId to FormData");
+
+    // Build FormData
+    Object.entries(formData).forEach(([key, value]) => {
+      
+      console.log(`🔧 Processing field: ${key} =`, value);
+
+      // Resume file
+      if (key === "resumeUrl") {
+        if (value instanceof File) {
+          console.log("📎 Resume file detected:", value.name);
+          data.append("resume", value);
+        } else if (typeof value === "string") {
+          console.log("🔗 Resume URL string detected:", value);
+          data.append(`formData[resumeUrl]`, value);
+        }
+        return;
+      }
+
+      // Arrays
+      if (Array.isArray(value)) {
+        console.log(`📚 Array field detected: ${key} (${value.length} items)`);
+        value.forEach((item, i) => {
+          data.append(`formData[${key}][${i}]`, item);
+        });
+        return;
+      }
+
+      // Simple field
+      data.append(`formData[${key}]`, value);
+    });
+
+    // ---------------------------------------------------------
+    // LOG FULL FORMDATA CONTENTS
+    // ---------------------------------------------------------
+    console.log("📦 FINAL FORMDATA ENTRIES:");
+    for (let pair of data.entries()) {
+      console.log("   →", pair);
+    }
+
+    // ---------------------------------------------------------
+    // SEND REQUEST
+    // ---------------------------------------------------------
+    try {
+      console.log("🚀 Sending POST to /api/applications ....");
+      const response = await API.post("/applications", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      console.log("✅ POST SUCCESS — SERVER RESPONSE:", response.data);
+      return response;
+    } catch (error) {
+      console.error("❌ POST ERROR in submitForm()", error.response?.data || error.message);
+      throw error;
+    }
+  };
+  // ---------------------------------------------------------
+
+  const getForm = async (userId) => {
+    console.log("📥 getForm() CALLED for user:", userId);
     return await API.get(`/applications/${userId}`);
-  }
+  };
 
   return (
     <AuthContext.Provider value={{ user, login, signup, forgotPassword, logout, submitForm, getForm, application }}>

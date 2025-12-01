@@ -1,95 +1,70 @@
 import express from "express";
 import Application from "../models/applicationModel.js";
-import User from "../models/userModel.js";
+import { upload } from "../middleware/upload.js";
 
 const router = express.Router();
 
-/**
- * @route   POST /api/applications
- * @desc    Create or update a user's application
- * @access  Public (can make it protected later using JWT)
- */
-router.post("/", async (req, res) => {
-  try {
-    const { userId, formData } = req.body;
+// CREATE or UPDATE APPLICATION
+router.post(
+  "/",
+  upload.single("resume"),
+  async (req, res) => {
+    console.log("📥 POST /api/applications hit");
+    console.log("➡ req.body:", req.body);
+    console.log("➡ req.file:", req.file);
 
-    if (!userId) {
-      return res.status(400).json({ message: "User ID is required" });
-    }
+    try {
+      const userId = req.body.userId;
 
-    // Check if user exists
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+      if (!userId) {
+        return res.status(400).json({
+          message: "Missing userId!",
+          bodyReceived: req.body
+        });
+      }
 
-    // Check if the user already has an application
-    let application = await Application.findOne({ user: userId });
+      // Parse formData fields
+      const formData = {};
+      for (let key in req.body) {
+        if (key.startsWith("formData[")) {
+          const clean = key.replace("formData[", "").replace("]", "");
+          formData[clean] = req.body[key];
+        }
+      }
 
-    if (application) {
-      // Update existing application
-      application = await Application.findOneAndUpdate(
-        { user: userId },
+      if (req.file) {
+        formData.resumeUrl = `/uploads/resumes/${req.file.filename}`;
+      }
+
+      const newApplication = await Application.findOneAndUpdate(
+        { userId },
         { $set: formData },
-        { new: true }
+        { upsert: true, new: true }
       );
-      return res.status(200).json({ message: "Application updated", application });
-    } else {
-      // Create a new application
-      const newApplication = await Application.create({
-        user: userId,
-        ...formData,
+
+      res.json({
+        message: "Application saved",
+        application: newApplication
       });
 
-      // Link it to the user
-      user.application = newApplication._id;
-      await user.save();
-
-      return res.status(201).json({
-        message: "Application submitted successfully",
-        application: newApplication,
+    } catch (error) {
+      console.error("❌ SERVER ERROR:", error);
+      res.status(500).json({
+        message: "Server error",
+        error: error.message
       });
     }
-  } catch (error) {
-    console.error("❌ Error submitting application:", error.message);
-    res.status(500).json({ message: "Server error", error: error.message });
   }
-});
+);
 
-/**
- * @route   GET /api/applications/:userId
- * @desc    Get a user's application by userId
- * @access  Public (later make it protected)
- */
+
 router.get("/:userId", async (req, res) => {
   try {
-    const { userId } = req.params;
-
-    const application = await Application.findOne({ user: userId });
-
-    if (!application) {
-      return res.status(404).json({ message: "Application not found" });
-    }
-
-    res.status(200).json(application);
-  } catch (error) {
-    console.error("❌ Error fetching application:", error.message);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-});
-
-/**
- * @route   GET /api/applications
- * @desc    Get all applications (for admin use)
- * @access  Public (restrict later)
- */
-router.get("/", async (req, res) => {
-  try {
-    const applications = await Application.find().populate("user", "firstName lastName email");
-    res.status(200).json(applications);
-  } catch (error) {
-    console.error("❌ Error fetching applications:", error.message);
-    res.status(500).json({ message: "Server error", error: error.message });
+    const app = await Application.findOne({ userId: req.params.userId });
+    if (!app) return res.status(404).json({ message: "Not found" });
+    res.json(app);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
