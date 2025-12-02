@@ -1,15 +1,51 @@
 import express from "express";
 import Application from "../models/applicationModel.js";
-import User from "../models/userModel.js";
+import adminAuth from "../middleware/adminAuth.js";
 import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
-/**
- * @route   POST /api/applications
- * @desc    Create or update a user's application
- * @access  Public (can make it protected later using JWT)
- */
+// -------------------------------------------
+// ADMIN ROUTES MUST COME FIRST
+// -------------------------------------------
+
+// Admin get all submitted applications
+router.get("/admin/all", adminAuth, async (req, res) => {
+  try {
+    const apps = await Application.find({
+      status: { $ne: "draft" }
+    }).sort({ createdAt: -1 });
+
+    res.json(apps);
+  } catch (error) {
+    console.error("Error fetching apps:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Update status
+router.put("/admin/status/:id", adminAuth, async (req, res) => {
+  const { status } = req.body;
+
+  try {
+    const app = await Application.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    res.json({ message: "Status updated", app });
+  } catch (error) {
+    console.error("Status update error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// -------------------------------------------
+// NORMAL USER ROUTES
+// -------------------------------------------
+
+// Submit or update application
 router.post("/", upload.single("resume"), async (req, res) => {
   try {
     console.log("🔥 Incoming POST /api/applications");
@@ -30,7 +66,7 @@ router.post("/", upload.single("resume"), async (req, res) => {
       city: req.body.city,
       disability: req.body.disability,
       indigenousIdentity: req.body.indigenousIdentity,
-      ethnicity: req.body.ethnicity, // array
+      ethnicity: req.body.ethnicity,
       otherEthnicity: req.body.otherEthnicity,
       levelOfStudy: req.body.levelOfStudy,
       school: req.body.school,
@@ -42,7 +78,7 @@ router.post("/", upload.single("resume"), async (req, res) => {
       shareWithSponsors: req.body.shareWithSponsors,
       linkedin: req.body.linkedin,
       github: req.body.github,
-      dietaryRestrictions: req.body.dietaryRestrictions, // array
+      dietaryRestrictions: req.body.dietaryRestrictions,
       otherDietary: req.body.otherDietary,
       tshirtSize: req.body.tshirtSize,
       whyElleHacks: req.body.whyElleHacks,
@@ -67,44 +103,38 @@ router.post("/", upload.single("resume"), async (req, res) => {
     console.warn("❌ APPLICATION POST ERROR:", err);
     res.status(500).json({ message: "Failed to submit application", error: err.message });
   }
+});
 
+// GET application by application ID (ADMIN VIEW)
+router.get("/admin/view/:id", adminAuth, async (req, res) => {
+  try {
+    const app = await Application.findById(req.params.id);
+
+    if (!app) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+
+    res.json(app);
+  } catch (error) {
+    console.error("❌ Error fetching application:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 
-/**
- * @route   GET /api/applications/:userId
- * @desc    Get a user's application by userId
- * @access  Public (later make it protected)
- */
+// Fetch single user application AFTER admin routes
 router.get("/:userId", async (req, res) => {
   try {
-    const { userId } = req.params;
-
-    const application = await Application.findOne({ user: userId });
+    const application = await Application.findOne({ user: req.params.userId });
 
     if (!application) {
       return res.status(404).json({ message: "Application not found" });
     }
 
-    res.status(200).json(application);
+    res.json(application);
   } catch (error) {
-    console.error("❌ Error fetching application:", error.message);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-});
-
-/**
- * @route   GET /api/applications
- * @desc    Get all applications (for admin use)
- * @access  Public (restrict later)
- */
-router.get("/", async (req, res) => {
-  try {
-    const applications = await Application.find().populate("user", "firstName lastName email");
-    res.status(200).json(applications);
-  } catch (error) {
-    console.error("❌ Error fetching applications:", error.message);
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.error("❌ Error fetching application:", error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
