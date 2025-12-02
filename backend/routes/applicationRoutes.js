@@ -4,6 +4,9 @@ import User from "../models/userModel.js";
 import upload from "../middleware/upload.js";
 
 const router = express.Router();
+const parseBool = (v) => {
+      return v === "true" ? true : v === "false" ? false : null;
+}
 
 /**
  * @route   POST /api/applications
@@ -15,6 +18,8 @@ router.post("/", upload.single("resume"), async (req, res) => {
     console.log("🔥 Incoming POST /api/applications");
     console.log("req.body:", req.body);
     console.log("req.file:", req.file);
+
+
 
     const data = {
       user: req.body.userId,
@@ -37,9 +42,9 @@ router.post("/", upload.single("resume"), async (req, res) => {
       graduationYear: req.body.graduationYear,
       fieldOfStudy: req.body.fieldOfStudy,
       hackathonsAttended: req.body.hackathonsAttended,
-      attendedElleHacksBefore: req.body.attendedElleHacksBefore,
+      attendedElleHacksBefore: parseBool(req.body.attendedElleHacksBefore),
       yorkStudentNumber: req.body.yorkStudentNumber,
-      shareWithSponsors: req.body.shareWithSponsors,
+      shareWithSponsors: parseBool(req.body.shareWithSponsors),
       linkedin: req.body.linkedin,
       github: req.body.github,
       dietaryRestrictions: req.body.dietaryRestrictions, // array
@@ -49,17 +54,29 @@ router.post("/", upload.single("resume"), async (req, res) => {
       goals: req.body.goals,
       projectStory: req.body.projectStory,
       confirmInPerson: req.body.confirmInPerson,
-      overnightStay: req.body.overnightStay,
+      overnightStay: parseBool(req.body.overnightStay),
       agreeCodeOfConduct: req.body.agreeCodeOfConduct,
       agreeMLHPrivacy: req.body.agreeMLHPrivacy,
-      agreeMLHComms: req.body.agreeMLHComms,
+      agreeMLHComms: parseBool(req.body.agreeMLHComms),
       accessibilityRequests: req.body.accessibilityRequests,
       status: req.body.status,
       resumeUrl: req.file ? `/uploads/resumes/${req.file.filename}` : null
     };
 
-    const app = new Application(data);
-    await app.save();
+    let app = await Application.findOne({ user: req.body.userId });
+
+    if (app) {
+      // Update existing application
+      app = await Application.findOneAndUpdate(
+        { user: req.body.userId },
+        { $set: data },
+        { new: true }
+      );
+    } else {
+      // Create new application
+      app = new Application(data);
+      await app.save();
+    }
 
     res.status(201).json(app);
 

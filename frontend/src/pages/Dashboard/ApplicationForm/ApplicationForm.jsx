@@ -72,7 +72,7 @@ function App() {
     overnightStay: null,
     agreeCodeOfConduct: false,
     agreeMLHPrivacy: false,
-    agreeMLHComms: false,
+    agreeMLHComms: null,
     accessibilityRequests: "",
     status: "draft",
   };
@@ -96,7 +96,6 @@ function App() {
         return (
           formData.country &&
           formData.province &&
-          formData.city &&
           formData.disability &&
           formData.indigenousIdentity &&
           formData.ethnicity.length > 0
@@ -111,9 +110,7 @@ function App() {
           (formData.attendedElleHacksBefore !== null)
         );
       case 5:
-        return (
-          formData.yorkStudentNumber
-        );
+        return true;
       case 6:
         return (
           formData.resumeUrl && 
