@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Nobile:wght@400;500;700&display=swap');
 
+.revert-tailwind {
+  all: initial; /* Resets all properties to their initial values */
+}
+
 html, body {
   min-height: 100%;
 }
@@ -35,7 +39,8 @@ body {
 }
 
 .header h1 {
-  padding-top: 1.5rem;
+  padding-top: 2rem;
+  font-weight: bold;
   margin-bottom: 0.5rem;
   font-size: 20px;
 }
@@ -78,7 +83,7 @@ h2 {
 .info-card h2,
 .info-card h3 {
   color: #000000;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
 }
 
 .agreement {
@@ -95,16 +100,16 @@ h2 {
   align-items: center;
   text-align: left;
   position: relative;
-  top: 40px;
-  right: 85px;
+  top: 25px;
+  right: 115px;
 }
 
 .section-header h2 {
   color: #FFFFFF;
   margin-left: -275px;
   text-align: center;
-  bottom: 10px;
   font-weight: bold;
+  padding-top: 15px;
   font-size: 18px;
   z-index: 1;
 }
@@ -147,7 +152,7 @@ h2 {
 .info-card,
 .agreement,
 .form-section {
-  max-width: 850px;
+  max-width: 900px;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
@@ -175,10 +180,13 @@ input, select {
   border-radius: 10px;
   border: 1px solid #ccc;
   margin-top: 5px;
+  background-color: white;
+  color: #412200;
 }
 
 .radio-group, .radio-block {
-  margin-top: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   display: flex;
   flex-direction: row;
   gap: 50px;
@@ -211,7 +219,7 @@ input, select {
 
 .party-popper {
   width: 110px;
-  top: -70px;
+  top: -85px;
   left: 30px;
 }
 
@@ -276,14 +284,14 @@ input, select {
 .cord {
   position: absolute;
   top: 10px;
-  width: 850px;
+  width: 860px;
   z-index: -1;
 }
 
 .mouse {
   width: 120px;
   margin-left: 275px;
-  margin-top: 10px;
+  margin-top: 1px;
   z-index: 1;
 }
 
@@ -340,4 +348,9 @@ input, select {
   background-color: white;
   text-align: center;
   padding: 10px;
+}
+
+#whyElleHacks {
+  background-color: white;
+  border: 2px solid #BD7777;
 }

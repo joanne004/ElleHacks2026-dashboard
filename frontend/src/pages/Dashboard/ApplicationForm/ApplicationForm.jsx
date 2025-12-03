@@ -30,7 +30,7 @@ import girl from "../../../assets/ApplicationForm/girl-laptop.png";
 
 function App() {
 
-  const { user, submitForm, getForm } = useAuth();
+  const { user, submitForm, getForm, resumeURL } = useAuth();
   const [agreement, setAgreement] = useState(() => {
     const saved = localStorage.getItem("agreement");
     return saved === "true";
@@ -72,7 +72,7 @@ function App() {
     overnightStay: null,
     agreeCodeOfConduct: false,
     agreeMLHPrivacy: false,
-    agreeMLHComms: false,
+    agreeMLHComms: null,
     accessibilityRequests: "",
     status: "draft",
   };
@@ -96,7 +96,6 @@ function App() {
         return (
           formData.country &&
           formData.province &&
-          formData.city &&
           formData.disability &&
           formData.indigenousIdentity &&
           formData.ethnicity.length > 0
@@ -111,9 +110,7 @@ function App() {
           (formData.attendedElleHacksBefore !== null)
         );
       case 5:
-        return (
-          formData.yorkStudentNumber
-        );
+        return true;
       case 6:
         return (
           formData.resumeUrl && 
@@ -208,9 +205,7 @@ function App() {
 
     setFormData(updatedData);
     localStorage.setItem("formData", JSON.stringify(updatedData));
-
     
-
     try {
       await submitForm(user.id, updatedData); 
     } catch (error) {
@@ -226,7 +221,19 @@ useEffect(() => {
       const res = await getForm(user.id);
       setAgreement(true);
       localStorage.setItem("agreement", "true");
-      setFormData(res.data); 
+      // const fullUrl = res.data.resumeUrl;
+      // if (fullUrl) {
+      //   const filename = fullUrl.split('/').pop(); 
+      //   const cleanFilename = filename.split('-').slice(1).join('-');
+      //   localStorage.setItem("resumeURL", cleanFilename);
+      // }
+      // setFormData(res.data); 
+      setFormData(prev => ({
+        ...prev,
+        ...res.data,
+        resumeUrl: res.data.resumeUrl || prev.resumeUrl || null
+      }));
+
       if (res.data.status !== 'draft') {
         setStep(10);
       }
@@ -518,28 +525,6 @@ useEffect(() => {
             <b>Upload your resume here, named in the following format*</b>
             <p>LastName_FirstName.pdf</p><p className="italics">Example: Doe_Jane.pdf</p>
             <label htmlFor="fileUpload" className="fileUpload"><img src={file} alt="Folder" className="file" /></label>
-            {/* <input 
-              type="file"
-              id="fileUpload" 
-              name="resumeUrl" 
-              accept="application/pdf" 
-              onChange={(e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-
-                setFormData((prev) => {
-                const updated = { ...prev, resumeUrl: file };
-
-                localStorage.setItem("formData",
-                JSON.stringify({
-                ...prev,
-                resumeUrl: file.name
-                }));
-
-                return updated;
-              });
-            }}
-            style={{ display: "none" }} required /> */}
             <input 
               type="file"
               id="fileUpload" 
@@ -555,8 +540,9 @@ useEffect(() => {
                 }
               }}
               style={{ display: "none" }} required />
+              {console.log(formData.resumeUrl)}
               {formData.resumeUrl &&
-                <p>{formData.resumeUrl.name}</p>
+                <p className="pt-4">{formData.resumeUrl}</p>
               }
             <br /><br />
             <b>Can we share your resume & form responses with our sponsors for recruitment opportunities?</b>
