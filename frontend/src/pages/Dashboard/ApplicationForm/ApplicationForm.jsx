@@ -227,12 +227,7 @@ useEffect(() => {
       //   const cleanFilename = filename.split('-').slice(1).join('-');
       //   localStorage.setItem("resumeURL", cleanFilename);
       // }
-      // setFormData(res.data); 
-      setFormData(prev => ({
-        ...prev,
-        ...res.data,
-        resumeUrl: res.data.resumeUrl || prev.resumeUrl || null
-      }));
+      setFormData(res.data);
 
       if (res.data.status !== 'draft') {
         setStep(10);
@@ -540,9 +535,8 @@ useEffect(() => {
                 }
               }}
               style={{ display: "none" }} required />
-              {console.log(formData.resumeUrl)}
               {formData.resumeUrl &&
-                <p className="pt-4">{formData.resumeUrl}</p>
+                <p className="pt-4">{formData.resumeUrl.name}</p>
               }
             <br /><br />
             <b>Can we share your resume & form responses with our sponsors for recruitment opportunities?</b>
