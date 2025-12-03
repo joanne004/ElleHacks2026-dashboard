@@ -49,7 +49,7 @@ router.put("/admin/status/:id", adminAuth, async (req, res) => {
 // -------------------------------------------
 
 // Submit or update application
-router.post("/", upload.single("resume"), async (req, res) => {
+router.post("/", upload.single("resumeUrl"), async (req, res) => {
   try {
     console.log("🔥 Incoming POST /api/applications");
     console.log("req.body:", req.body);
@@ -96,7 +96,7 @@ router.post("/", upload.single("resume"), async (req, res) => {
       agreeMLHComms: parseBool(req.body.agreeMLHComms),
       accessibilityRequests: req.body.accessibilityRequests,
       status: req.body.status,
-      resumeUrl: req.file ? `/uploads/resumes/${req.file.filename}` : null
+      resumeUrl: req.file ? `/uploads/resumes/${req.file.filename}` : req.body.resumeUrl ? req.body.resumeUrl : null
     };
 
     let app = await Application.findOne({ user: req.body.userId });

@@ -22,7 +22,6 @@ const Sidebar = (props) => {
     if (formData.status === 'draft') {
     try {
       await submitForm(user.id, formData);
-      // fetchApplication();
     } catch (error) {
       console.error(error);
       alert("Failed to submit application");

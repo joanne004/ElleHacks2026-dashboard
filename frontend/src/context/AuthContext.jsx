@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
       if (key === "resumeUrl") {
         if (value instanceof File) {
           console.log(`📎 Resume file detected: ${value.name}`);
-          data.append("resume", value);
+          data.append("resumeUrl", value);
         } else if (typeof value === "string") {
           console.log("➡️ Existing resume URL detected:", value);
           data.append("resumeUrl", value);
