@@ -19,6 +19,7 @@ const Sidebar = (props) => {
   const handleLogout = async (e) => {
     e.preventDefault();
     console.log(props.data);
+    if (formData) {
     if (formData.status === 'draft') {
     try {
       await submitForm(user.id, formData);
@@ -26,7 +27,7 @@ const Sidebar = (props) => {
       console.error(error);
       alert("Failed to submit application");
     }
-    }    
+    }};  
     localStorage.removeItem('authToken'); 
     localStorage.clear();
     navigate('/login'); // redirect to login page
