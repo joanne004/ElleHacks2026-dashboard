@@ -149,7 +149,6 @@ router.get("/:userId", async (req, res) => {
     }
 
     res.json(application);
-    console.log(`yellowwwww ${application}`);
   } catch (error) {
     console.error("❌ Error fetching application:", error);
     res.status(500).json({ message: "Server error" });
