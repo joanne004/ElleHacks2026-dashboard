@@ -10,70 +10,74 @@ const applicationSchema = new mongoose.Schema({
   },
 
   // ---- Participants Information ----
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
+  firstName: { type: String },
+  lastName: { type: String },
   preferredFirstName: { type: String },
   pronouns: { type: String },
-  email: { type: String, required: true },
-  phone: { type: String, required: true },
+  email: { type: String },
+  phone: { type: String },
 
-  ageOnEvent: { type: Number, required: true },
-  country: { type: String, required: true },
-  province: { type: String, required: true },
-  city: { type: String, required: true },
+  ageOnEvent: { type: Number },
+  country: { type: String },
+  province: { type: String },
+  city: { type: String },
 
   disability: { 
     type: String, 
-    enum: ["Yes", "No", "Prefer not to answer"] 
+    // enum: ["Yes", "No", "Prefer not to answer"],
+    // default: "No"
   },
   indigenousIdentity: { 
     type: String, 
-    enum: ["Yes", "No", "Prefer not to answer"],
-    required: true
+    // enum: ["Yes", "No", "Prefer not to answer"],
+    // default: "No"
   },
   ethnicity: { type: [String] }, // allow multiple options
   otherEthnicity: { type: String },
 
   // ---- Education ----
-  levelOfStudy: { type: String, required: true },
-  school: { type: String, required: true },
-  graduationYear: { type: Number, required: true },
-  fieldOfStudy: { type: String, required: true },
+  levelOfStudy: { type: String },
+  school: { type: String },
+  graduationYear: { type: Number },
+  fieldOfStudy: { type: String },
 
   // ---- Hackathon Experience ----
-  hackathonsAttended: { type: Number, required: true },
-  attendedElleHacksBefore: { type: Boolean, required: true },
+  hackathonsAttended: { type: Number },
+  attendedElleHacksBefore: { type: Boolean, default: null },
   yorkStudentNumber: { type: String },
 
   // ---- Resume & Links ----
-  resumeUrl: { type: String },
-  shareWithSponsors: { type: Boolean, default: false },
+  resumeUrl: { type: Object },
+  shareWithSponsors: { type: Boolean, default: null },
   linkedin: { type: String },
   github: { type: String },
 
   // ---- Event Logistics ----
   dietaryRestrictions: { type: [String] }, // multiple selections
   otherDietary: { type: String },
-  tshirtSize: { type: String, enum: ["XS", "S", "M", "L", "XL"] },
+  tshirtSize: { type: String, 
+    // enum: ["XS", "S", "M", "L", "XL"], 
+    // default: "M"
+  },
 
   // ---- Application Questions ----
-  whyElleHacks: { type: String, required: true },
-  goals: { type: String, required: true },
-  projectStory: { type: String, required: true },
+  whyElleHacks: { type: String },
+  goals: { type: String },
+  projectStory: { type: String },
 
   // ---- Final Section ----
-  confirmInPerson: { type: Boolean, required: true },
-  overnightStay: { type: Boolean, required: true },
-  agreeCodeOfConduct: { type: Boolean, required: true },
-  agreeMLHPrivacy: { type: Boolean, required: true },
-  agreeMLHComms: { type: Boolean, default: false }, // optional
+  confirmInPerson: { type: Boolean },
+  overnightStay: { type: Boolean },
+  agreeCodeOfConduct: { type: Boolean },
+  agreeMLHPrivacy: { type: Boolean },
+  agreeMLHComms: { type: Boolean, default: null }, // optional
   accessibilityRequests: { type: String },
 
   // ---- Status ----
   status: { 
     type: String, 
-    enum: ["submitted", "reviewing", "accepted", "waitlist", "rejected"], 
-    default: "submitted" 
+    enum: ["draft", "submitted", "reviewing", "accepted", "waitlist", "rejected"], 
+    default: "draft" 
   }
 }, { timestamps: true });
 

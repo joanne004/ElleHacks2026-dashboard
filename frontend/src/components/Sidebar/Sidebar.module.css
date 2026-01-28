@@ -1,5 +1,5 @@
 .sidebar {
-  width: clamp(200px, 18vw, 260px);
+  width: clamp(200px, 18vw, 310px);
   flex: 0 0 clamp(200px, 18vw, 260px); /* responsive, do not shrink */
   background: #ffe2d5; /* peach */
   color: #412200; /* dark brown */

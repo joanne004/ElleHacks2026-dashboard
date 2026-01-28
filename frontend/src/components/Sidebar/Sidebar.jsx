@@ -1,5 +1,6 @@
 // frontend/src/components/Sidebar/Sidebar.jsx
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from "../../context/AuthContext";
 import { useState } from 'react';
 import styles from './Sidebar.module.css';
 import logo from '../../assets/logo 4.png';
@@ -7,13 +8,28 @@ import iconHome from '../../assets/Home.png';
 import iconSponsors from '../../assets/coin-hand.png';
 import iconContact from '../../assets/email.png';
 import iconFaq from '../../assets/message-chat-01.png';
+import iconAppForm from '../../assets/appForm.png';
 
-const Sidebar = () => {
+const Sidebar = (props) => {
+  const { user, submitForm } = useAuth(); 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate(); // <-- create navigate function
+  const formData = props.data;
 
-  const handleLogout = () => {
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    console.log(props.data);
+    if (formData) {
+    if (formData.status === 'draft') {
+    try {
+      await submitForm(user.id, formData);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to submit application");
+    }
+    }};  
     localStorage.removeItem('authToken'); 
+    localStorage.clear();
     navigate('/login'); // redirect to login page
     setIsMobileMenuOpen(false);
   };
@@ -64,6 +80,16 @@ const Sidebar = () => {
           </li>
           <li className={styles.navItem}>
             <NavLink
+              to="/dashboard/application-form"
+              className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}
+              onClick={handleNavClick}
+            >
+              <img src={iconAppForm} alt="Application Form" className={styles.icon} />
+              <span className={styles.label}>Application Form</span>
+            </NavLink>
+          </li>
+          <li className={styles.navItem}>
+            <NavLink
               to="/dashboard/faq"
               className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}
               onClick={handleNavClick}
@@ -105,6 +131,10 @@ const Sidebar = () => {
           <NavLink to="/dashboard/contact" className={styles.mobileLink} onClick={handleNavClick}>
             <img src={iconContact} alt="Contact" className={styles.icon} />
             <span>Contact</span>
+          </NavLink>
+          <NavLink to="/dashboard/application-form" className={styles.mobileLink} onClick={handleNavClick}>
+            <img src={iconAppForm} alt="Application Form" className={styles.icon} />
+            <span>Application Form</span>
           </NavLink>
           <NavLink to="/dashboard/faq" className={styles.mobileLink} onClick={handleNavClick}>
             <img src={iconFaq} alt="FAQ" className={styles.icon} />
